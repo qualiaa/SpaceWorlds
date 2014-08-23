@@ -1,5 +1,5 @@
-file(GLOB sources *.cpp)
-file(GLOB headers *.hpp)
+file(GLOB sources *.cpp Space/*.cpp)
+file(GLOB headers *.hpp Space/*.hpp)
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources} ${headers})
 
