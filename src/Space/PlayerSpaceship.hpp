@@ -8,7 +8,6 @@ class PlayerSpaceship : public tank::Entity
     tank::Vectorf velocity {0,0};
     tank::Vectorf direction {0,-1};
     const float rotationAngle {1};
-    bool justCollided {false};
 
 public:
     static const float acceleration;

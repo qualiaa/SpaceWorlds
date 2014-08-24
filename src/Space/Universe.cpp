@@ -6,6 +6,5 @@
 Universe::Universe()
 {
     makeEntity<PlayerSpaceship>();
-    makeEntity<Planet>(tank::Vectorf{100,100});
-    makeEntity<Dialog>(tank::Vectorf{0,0}, "heya");
+    makeEntity<Planet>(tank::Vectorf{100,100}, "heya");
 }

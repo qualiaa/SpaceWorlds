@@ -18,4 +18,6 @@ public:
     std::string getText() {
         return text_->getText();
     }
+    
+    void setVisible(bool visible) {text_->setVisible(visible);}
 };

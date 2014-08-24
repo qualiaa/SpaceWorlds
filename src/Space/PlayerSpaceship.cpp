@@ -49,15 +49,6 @@ void PlayerSpaceship::update()
     velocity /= 1.1;
     tank::Camera& cam = tank::Game::world()->camera;
     cam.setPos(getPos() - cam.getOrigin());
-    auto planets = collide("Planet");
-    if (!planets.empty()) {
-        if (!justCollided) {
-            justCollided = true;
-            std::cout << "You have collided with a planet!" << std::endl;
-        }
-    } else {
-        justCollided = false;
-    }
 }
 
 void PlayerSpaceship::setRotation(float angle)
