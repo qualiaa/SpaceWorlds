@@ -14,7 +14,7 @@ PlayerSpaceship::PlayerSpaceship()
 {
     setType("PlayerSpaceship");
     sprite = makeGraphic<tank::FrameList>(tank::Image{"assets/graphics/beetle.png"},
-                                          tank::Vectoru{16, 20});
+                                          tank::Vectoru{16, 20}, tank::Vectoru{1, 1});
     setPos({90,90});
 
     sprite->add("idle", {0}, std::chrono::milliseconds(0));
