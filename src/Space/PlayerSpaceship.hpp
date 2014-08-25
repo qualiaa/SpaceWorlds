@@ -2,8 +2,9 @@
 #include <random>
 #include <Tank/System/Entity.hpp>
 #include <Tank/Graphics/FrameList.hpp>
+#include "Hittable.hpp"
 
-class PlayerSpaceship : public tank::Entity
+class PlayerSpaceship : public Hittable
 {
     tank::observing_ptr<tank::FrameList> sprite;
 
