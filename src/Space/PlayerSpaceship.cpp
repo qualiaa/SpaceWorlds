@@ -12,7 +12,7 @@ const float PlayerSpaceship::acceleration            {0.175};
 const float PlayerSpaceship::maxSpeed                {3.2};
 const float PlayerSpaceship::maxSpeedSquared         {maxSpeed * maxSpeed};
 
-PlayerSpaceship::PlayerSpaceship()
+PlayerSpaceship::PlayerSpaceship() : Hittable(10, "enemyBullet")
 {
     setType("PlayerSpaceship");
     auto& image = Resources::get<tank::Image>("assets/graphics/beetle.png");
