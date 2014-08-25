@@ -7,6 +7,7 @@ class Dialog : public tank::Entity
 {
     static tank::Font font;
     tank::observing_ptr<tank::Text> text_;
+    static bool font_loaded;
     
 public:
     Dialog(tank::Vectorf pos, std::string text);

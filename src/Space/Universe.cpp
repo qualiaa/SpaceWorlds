@@ -16,7 +16,7 @@ Universe::Universe()
 
 void Universe::genWorld()
 {
-	const std::vector<std::string> names = {
+	const std::vector<std::string> names {
 		"alpha",	"beta",		"gamma",	"delta",
 		"epsilon",	"diamond",	"apple",	"tango",
 		"foxtrot",	"disco",	"astor",	"cerulean"
@@ -26,12 +26,12 @@ void Universe::genWorld()
 
     std::mt19937 rand_eng {3};
     std::uniform_real_distribution<float> rand_floats {0,1};
-    std::uniform_int_distribution<std::size_t> rand_ints {0, names.size()};
+    std::uniform_int_distribution<std::size_t> rand_ints {0, names.size()-1};
     std::uniform_int_distribution<int> rand_x {0, worldWidth};
     std::uniform_int_distribution<int> rand_y {0, worldHeight};
     std::uniform_int_distribution<int> rand_digit {0,9};
     
-    for (int i = 0; i < names.size(); ++i) {
+    for (std::size_t i = 0; i < names.size(); ++i) {
         std::stringstream name;
         float chance {1};
         
@@ -64,7 +64,7 @@ void Universe::genWorld()
         }
         
         planets.emplace_back(
-            makeEntity<Planet>(tank::Vectorf{genx, geny}, name.str()));
+             makeEntity<Planet>(tank::Vectorf{genx, geny}, name.str()));
     }
 
 }
