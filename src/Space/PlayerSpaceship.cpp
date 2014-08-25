@@ -1,14 +1,12 @@
 #include "PlayerSpaceship.hpp"
-#include <limits>
 #include <functional>
-#include <random>
 #include <Tank/System/Game.hpp>
 #include <Tank/System/Keyboard.hpp>
 
 const float PlayerSpaceship::angularAcceleration     {0.1};
 const float PlayerSpaceship::maxAngularSpeed         {1.5};
 const float PlayerSpaceship::acceleration            {0.01};
-const float PlayerSpaceship::maxSpeed                {1};
+const float PlayerSpaceship::maxSpeed                {0.8};
 const float PlayerSpaceship::maxSpeedSquared         {maxSpeed * maxSpeed};
 
 PlayerSpaceship::PlayerSpaceship()
@@ -27,12 +25,10 @@ PlayerSpaceship::PlayerSpaceship()
 
     setOrigin(sprite->getSize() / 2);
     sprite->centreOrigin();
-    setLayer(std::numeric_limits<int>::max());
+    setLayer(100);
 
-    // centre hitbox, turning {0,0,w,h} into {-w,-h,w,h} / 2
+    // centre hitbox
     const auto oldHitbox = getHitbox();
-
-    //todo: hitbox seems a bit off
     setHitbox({-oldHitbox.w / 2, -oldHitbox.h / 2, oldHitbox.w, oldHitbox.h});
 }
 
@@ -65,7 +61,7 @@ void PlayerSpaceship::onAdded()
 
     auto halt = kbd::KeyDown(Key::Down) || kbd::KeyDown(Key::S);
     connect(halt, [this]() {
-        velocity -= acceleration * direction;
+        velocity /= 1.06;
     });
 }
 
@@ -80,10 +76,8 @@ void PlayerSpaceship::update()
 
     // update velocity
     if(!(tank::Keyboard::isKeyDown(tank::Key::W)
-     ||  tank::Keyboard::isKeyDown(tank::Key::S)
-     ||  tank::Keyboard::isKeyDown(tank::Key::Up)
-     ||  tank::Keyboard::isKeyDown(tank::Key::Down))) {
-        velocity /= 1.001;
+     ||  tank::Keyboard::isKeyDown(tank::Key::Up))) {
+        velocity /= 1.01;
     }
 
     if (speedSqr < acceleration*acceleration*0.01) {
@@ -99,10 +93,10 @@ void PlayerSpaceship::update()
     }
     setRotation(getRotation()+angularVelocity);
     if(!(tank::Keyboard::isKeyDown(tank::Key::A)
-      || tank::Keyboard::isKeyDown(tank::Key::S)
+      || tank::Keyboard::isKeyDown(tank::Key::D)
       || tank::Keyboard::isKeyDown(tank::Key::Left)
       || tank::Keyboard::isKeyDown(tank::Key::Right))) {
-        angularVelocity /= 1.1;
+        angularVelocity /= 1.05;
     }
 
     // update camera
