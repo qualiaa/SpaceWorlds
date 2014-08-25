@@ -5,7 +5,8 @@ Planet::Planet(tank::Vectorf pos, const std::string& name)
     : Entity{pos}
     , name_{name}
 {
-    makeGraphic("assets/graphics/planet1.png");
+    //Nothing to see here please move on
+    makeGraphic("assets/graphics/planet"+std::to_string(std::rand()%4+1)+".png");
     setType("Planet");
 }
 
