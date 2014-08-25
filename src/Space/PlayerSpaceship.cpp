@@ -5,6 +5,7 @@
 #include <Tank/Utility/Resources.hpp>
 #include <Tank/Utility/Vector.hpp>
 #include "Universe.hpp"
+#include "Bullet.hpp"
 
 const float PlayerSpaceship::angularAcceleration     {0.115};
 const float PlayerSpaceship::maxAngularSpeed         {1.5};
@@ -24,7 +25,6 @@ PlayerSpaceship::PlayerSpaceship() : Hittable(10, "enemyBullet")
     sprite->add("idle", {0}, std::chrono::milliseconds(0));
     sprite->add("engine_start", {4,5,6,7}, std::chrono::milliseconds(250));
     sprite->add("engine_stop", {7,6,5,4,4}, std::chrono::milliseconds(125));
-    sprite->add("engine_run", {6,7}, std::chrono::milliseconds(150));
     sprite->select("idle");
     sprite->start();
 
@@ -142,6 +142,12 @@ void PlayerSpaceship::update()
     if(getPos().y > Universe::worldHeight + size.y/2) {
         setPos(tank::Vectorf(getPos().x, -size.y/2));
     }
+
+    //Add bullet
+    if(tank::Keyboard::isKeyPressed(tank::Key::Space)) {
+        getWorld()->makeEntity<Bullet>(getPos(), direction, "playerBullet");
+    }
+
 }
 
 void PlayerSpaceship::setRotation(float angle)
