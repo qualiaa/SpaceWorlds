@@ -1,7 +1,8 @@
 #include "PlayerSpaceship.hpp"
+#include <limits>
+#include <functional>
 #include <Tank/System/Game.hpp>
 #include <Tank/System/Keyboard.hpp>
-#include <limits>
 
 const float PlayerSpaceship::angularAcceleration     {0.1};
 const float PlayerSpaceship::maxAngularSpeed         {1.5}; 
@@ -12,10 +13,18 @@ const float PlayerSpaceship::maxSpeedSquared         {maxSpeed * maxSpeed};
 PlayerSpaceship::PlayerSpaceship()
 {
     setType("PlayerSpaceship");
-    sprite = makeGraphic<tank::FrameList>(tank::Image{"assets/graphics/beetle.png"}, tank::Vectoru{16, 20});
+    sprite = makeGraphic<tank::FrameList>(tank::Image{"assets/graphics/beetle.png"},
+                                          tank::Vectoru{16, 20});
     setPos({90,90});
 
-    setOrigin(sprite->getSize()/2);
+    sprite->add("still", {0}, std::chrono::milliseconds(0));
+    sprite->add("engine_start", {4,5,6,7}, std::chrono::milliseconds(250));
+    sprite->add("engine_stop", {7,6,5,4}, std::chrono::milliseconds(250));
+    sprite->add("engine_run", {6,7}, std::chrono::milliseconds(250));
+    sprite->select("engine_still");
+    sprite->start();
+
+    setOrigin(sprite->getSize() / 2);
     sprite->centreOrigin();
     setLayer(std::numeric_limits<int>::max());
 
@@ -45,6 +54,12 @@ void PlayerSpaceship::onAdded()
     auto up = kbd::KeyDown(key::Up) || kbd::KeyDown(key::W);
     connect(up, [this](){
         velocity += acceleration * direction;
+        startEngine();
+    });
+
+    auto stop = kbd::KeyRelease(key::Up) || kbd::KeyRelease(key::W);
+    connect(stop, [this](){
+        stopEngine();
     });
 
     auto down = kbd::KeyDown(key::Down) || kbd::KeyDown(key::S);
@@ -55,9 +70,9 @@ void PlayerSpaceship::onAdded()
 
 void PlayerSpaceship::update()
 {
-    //Update position
-    float m = velocity.magnitudeSquared();
-    if(m > maxSpeedSquared) {
+    // Update position
+    const float speedSqr = velocity.magnitudeSquared();
+    if(speedSqr > maxSpeedSquared) {
         velocity = velocity.unit() * maxSpeed;
     }
     moveBy(velocity);
@@ -69,7 +84,7 @@ void PlayerSpaceship::update()
         velocity /= 1.08;
     }
 
-    //Update angle
+    // Update angle
     if(angularVelocity > maxAngularSpeed) {
         angularVelocity = maxAngularSpeed;
     }
@@ -84,6 +99,9 @@ void PlayerSpaceship::update()
         angularVelocity /= 1.1;
     }
 
+    // update animation
+
+    // update camera
     tank::Camera& cam = tank::Game::world()->camera;
     cam.setPos(getPos() - cam.getOrigin());
 }
@@ -93,4 +111,25 @@ void PlayerSpaceship::setRotation(float angle)
     auto rot = getRotation();
     Transformable::setRotation(angle);
     direction = direction.rotate(angle - rot);
+}
+
+void PlayerSpaceship::startEngine()
+{
+    // this ain't all that nice a check
+    if (not moving) {
+        moving = true;
+        sprite->select("engine_start", false,
+                      std::bind(&tank::FrameList::select, sprite.get(),
+                                "engine_run", true, []{}));
+    }
+}
+
+void PlayerSpaceship::stopEngine()
+{
+    // this ain't all that nice a check
+    if (moving) {
+        sprite->select("engine_stop", false,
+                      std::bind(&tank::FrameList::select, sprite.get(),
+                                "engine_still", false, [this]{moving = false;}));
+    }
 }
