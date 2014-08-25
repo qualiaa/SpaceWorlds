@@ -7,9 +7,11 @@
 Minimap::Minimap()
 {
     //Nothing to see here please move on
-    makeGraphic(Resources::get<tank::Image>("assets/graphics/minimap.png"));
-    setPos(tank::Game::window()->getSize() - getGraphic()->getSize()*2);
-    getGraphic()->setScale(2);
+    graphicSmall_ = makeGraphic(Resources::get<tank::Image>("assets/graphics/minimap.png"));
+    graphicBig_ = makeGraphic(Resources::get<tank::Image>("assets/graphics/minimap2.png"));
+    setPos(tank::Game::window()->getSize() - graphicSmall_->getSize());
+    graphicSmall_->setScale(2);
+    graphicBig_->setScale(2);
     setLayer(101);
 }
 
@@ -20,11 +22,35 @@ void Minimap::onAdded()
     
     auto toggle = kbd::KeyPress(key::M);
     connect(toggle, [this](){
-        getGraphic()->setVisible(!getGraphic()->isVisible());
+        switch (state) {
+            case State::None    : state = State::Small; break;
+            case State::Small   : state = State::Large; break;
+            case State::Large   : state = State::None; break;
+        }
     });
 }
 
 void Minimap::draw(const tank::Camera& cam)
 {
     Entity::draw({});
+}
+
+void Minimap::update()
+{
+    switch (state) {
+        case State::None    :
+            graphicSmall_->setVisible(false);
+            graphicBig_->setVisible(false);
+            break;
+        case State::Small   :
+            graphicSmall_->setVisible(true);
+            graphicBig_->setVisible(false);
+            setPos(tank::Game::window()->getSize() - graphicSmall_->getSize());
+            break;
+        case State::Large   :
+            graphicSmall_->setVisible(false);
+            graphicBig_->setVisible(true);
+            setPos(tank::Game::window()->getSize() - graphicBig_->getSize());
+            break;
+    }
 }
