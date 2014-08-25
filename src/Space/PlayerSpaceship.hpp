@@ -12,6 +12,7 @@ class PlayerSpaceship : public Hittable
     tank::Vectorf direction {0,-1};
     float angularVelocity{0};
     std::mt19937_64 randomGenerator;
+    bool engineOn {false};
 
 public:
     static const float acceleration;
@@ -30,6 +31,7 @@ public:
     void stopEngine();
     void sustainEngine();
     void idleEngine();
+    void rotateEngine();
 
     void shake();
 };
