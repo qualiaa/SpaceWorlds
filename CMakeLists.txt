@@ -7,7 +7,7 @@ include_directories(${TANK_INCLUDE_DIRS})
 #set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 if (NOT MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -Werror")
 endif()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
