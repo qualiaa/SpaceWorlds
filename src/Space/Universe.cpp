@@ -1,6 +1,7 @@
 #include "Universe.hpp"
 #include "PlayerSpaceship.hpp"
 #include "Planet.hpp"
+#include "Minimap.hpp"
 #include <Tank/System/Game.hpp>
 #include "../Dialog.hpp"
 #include <random>
@@ -8,6 +9,7 @@
 Universe::Universe()
 {
     makeEntity<PlayerSpaceship>();
+    makeEntity<Minimap>();
     camera.setScale(2);
     tank::Game::window()->setBackgroundColor({9,21,31});
 
