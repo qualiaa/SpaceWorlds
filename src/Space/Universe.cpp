@@ -29,7 +29,7 @@ void Universe::genWorld()
 
 	std::vector<tank::observing_ptr<Planet>> planets = {};
 
-    std::mt19937 rand_eng {3};
+    std::mt19937 rand_eng {std::random_device()()};
     std::uniform_real_distribution<float> rand_floats {0,1};
     std::uniform_int_distribution<std::size_t> rand_ints {0, names.size()-1};
     std::uniform_int_distribution<int> rand_x {0, worldWidth};
