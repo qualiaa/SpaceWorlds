@@ -3,6 +3,8 @@
 #include <Tank/System/Game.hpp>
 #include <Tank/System/Keyboard.hpp>
 #include <Tank/Utility/Resources.hpp>
+#include <Tank/Utility/Vector.hpp>
+#include "Universe.hpp"
 
 const float PlayerSpaceship::angularAcceleration     {0.1};
 const float PlayerSpaceship::maxAngularSpeed         {1.5};
@@ -105,6 +107,41 @@ void PlayerSpaceship::update()
     // update camera
     tank::Camera& cam = tank::Game::world()->camera;
     cam.setPos(getPos() - cam.getOrigin());
+
+    //Camera bounding
+    tank::Vectorf pos = cam.getPos();
+    tank::Vectorf size = cam.getOrigin();
+
+    if(pos.x < -size.x) {
+        pos = tank::Vectorf(-size.x, pos.y);
+        cam.setPos(pos);
+    }
+    if(pos.y < -size.y) {
+        pos = tank::Vectorf(pos.x, -size.y);
+        cam.setPos(pos);
+    }
+    if(pos.x > Universe::worldWidth-size.x) {
+        pos = tank::Vectorf(Universe::worldWidth-size.x, pos.y);
+        cam.setPos(pos);
+    }
+    if(pos.y > Universe::worldHeight-size.y) {
+        pos = tank::Vectorf(pos.x, Universe::worldHeight-size.y);
+        cam.setPos(pos);
+    }
+
+    //Player Wrapping
+    if(getPos().x < -size.x/2) {
+        setPos(tank::Vectorf(Universe::worldWidth+size.x/2, getPos().y));
+    }
+    if(getPos().y < -size.y/2) {
+        setPos(tank::Vectorf(getPos().x, Universe::worldWidth+size.y/2));
+    }
+    if(getPos().x > Universe::worldWidth + size.x/2) {
+        setPos(tank::Vectorf(-size.x/2, getPos().y));
+    }
+    if(getPos().y > Universe::worldHeight + size.y/2) {
+        setPos(tank::Vectorf(getPos().x, -size.y/2));
+    }
 }
 
 void PlayerSpaceship::setRotation(float angle)

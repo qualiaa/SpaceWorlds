@@ -6,6 +6,9 @@
 #include "../Dialog.hpp"
 #include <random>
 
+const int Universe::worldWidth = 500;
+const int Universe::worldHeight = 500;
+
 Universe::Universe()
 {
     makeEntity<PlayerSpaceship>();

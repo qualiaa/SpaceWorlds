@@ -9,7 +9,7 @@ class Universe : public tank::World
 public:
     Universe();
 
-    const int worldWidth  = 500;
-    const int worldHeight = 500;
+    static const int worldWidth;
+    static const int worldHeight;
 
 };
