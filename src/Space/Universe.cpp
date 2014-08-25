@@ -8,7 +8,7 @@
 Universe::Universe()
 {
     makeEntity<PlayerSpaceship>();
-    camera.setScale(3);
+    camera.setScale(2);
     tank::Game::window()->setBackgroundColor({9,21,31});
 
     genWorld();
