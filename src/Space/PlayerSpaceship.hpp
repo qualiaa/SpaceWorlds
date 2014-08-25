@@ -9,7 +9,6 @@ class PlayerSpaceship : public tank::Entity
     tank::Vectorf velocity {0,0};
     tank::Vectorf direction {0,-1};
     float angularVelocity{0};
-    bool moving {false};
 
 public:
     static const float acceleration;
@@ -26,4 +25,6 @@ public:
 
     void startEngine();
     void stopEngine();
+    void runEngine();
+    void idleEngine();
 };

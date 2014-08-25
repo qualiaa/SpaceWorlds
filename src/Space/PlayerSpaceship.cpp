@@ -5,7 +5,7 @@
 #include <Tank/System/Keyboard.hpp>
 
 const float PlayerSpaceship::angularAcceleration     {0.1};
-const float PlayerSpaceship::maxAngularSpeed         {1.5}; 
+const float PlayerSpaceship::maxAngularSpeed         {1.5};
 const float PlayerSpaceship::acceleration            {0.05};
 const float PlayerSpaceship::maxSpeed                {6.4};
 const float PlayerSpaceship::maxSpeedSquared         {maxSpeed * maxSpeed};
@@ -17,11 +17,11 @@ PlayerSpaceship::PlayerSpaceship()
                                           tank::Vectoru{16, 20});
     setPos({90,90});
 
-    sprite->add("still", {0}, std::chrono::milliseconds(0));
+    sprite->add("idle", {0}, std::chrono::milliseconds(0));
     sprite->add("engine_start", {4,5,6,7}, std::chrono::milliseconds(250));
-    sprite->add("engine_stop", {7,6,5,4}, std::chrono::milliseconds(250));
+    sprite->add("engine_stop", {7,6,5,4,4}, std::chrono::milliseconds(125));
     sprite->add("engine_run", {6,7}, std::chrono::milliseconds(250));
-    sprite->select("engine_still");
+    sprite->select("idle");
     sprite->start();
 
     setOrigin(sprite->getSize() / 2);
@@ -30,40 +30,39 @@ PlayerSpaceship::PlayerSpaceship()
 
     // centre hitbox, turning {0,0,w,h} into {-w,-h,w,h} / 2
     const auto oldHitbox = getHitbox();
-    
+
     //todo: hitbox seems a bit off
-    tank::Vectord newHitbox = {oldHitbox.w / 2, oldHitbox.h / 2};
-    setHitbox({-newHitbox.x, -newHitbox.y, newHitbox.x, newHitbox.y});
+    setHitbox({-oldHitbox.w / 2, -oldHitbox.h / 2, oldHitbox.w, oldHitbox.h});
 }
 
 void PlayerSpaceship::onAdded()
 {
     using kbd = tank::Keyboard;
-    using key = tank::Key;
+    using Key = tank::Key;
 
-    auto right = kbd::KeyDown(key::Right) || kbd::KeyDown(key::D);
-    connect(right, [this](){
+    auto clockwise = kbd::KeyDown(Key::Right) || kbd::KeyDown(Key::D);
+    connect(clockwise, [this](){
         angularVelocity += angularAcceleration;
     });
 
-    auto left = kbd::KeyDown(key::Left) || kbd::KeyDown(key::A);
-    connect(left, [this](){
+    auto counterclockwise = kbd::KeyDown(Key::Left) || kbd::KeyDown(Key::A);
+    connect(counterclockwise, [this](){
         angularVelocity -= angularAcceleration;
     });
 
-    auto up = kbd::KeyDown(key::Up) || kbd::KeyDown(key::W);
-    connect(up, [this](){
+    auto move = kbd::KeyDown(Key::Up) || kbd::KeyDown(Key::W);
+    connect(move, [this](){
         velocity += acceleration * direction;
-        startEngine();
     });
 
-    auto stop = kbd::KeyRelease(key::Up) || kbd::KeyRelease(key::W);
-    connect(stop, [this](){
-        stopEngine();
-    });
+    auto startEngine = kbd::KeyPress(Key::Up) || kbd::KeyPress(Key::W);
+    connect(startEngine, std::bind(&PlayerSpaceship::startEngine, this));
 
-    auto down = kbd::KeyDown(key::Down) || kbd::KeyDown(key::S);
-    connect(down, [this](){
+    auto stopEngine = kbd::KeyRelease(Key::Up) || kbd::KeyRelease(Key::W);
+    connect(stopEngine, std::bind(&PlayerSpaceship::stopEngine, this));
+
+    auto halt = kbd::KeyDown(Key::Down) || kbd::KeyDown(Key::S);
+    connect(halt, [this]() {
         velocity -= acceleration * direction;
     });
 }
@@ -77,11 +76,16 @@ void PlayerSpaceship::update()
     }
     moveBy(velocity);
 
+    // update velocity
     if(!(tank::Keyboard::isKeyDown(tank::Key::W)
      ||  tank::Keyboard::isKeyDown(tank::Key::S)
      ||  tank::Keyboard::isKeyDown(tank::Key::Up)
      ||  tank::Keyboard::isKeyDown(tank::Key::Down))) {
         velocity /= 1.08;
+    }
+
+    if (speedSqr < 0.001) {
+        velocity = {};
     }
 
     // Update angle
@@ -99,8 +103,6 @@ void PlayerSpaceship::update()
         angularVelocity /= 1.1;
     }
 
-    // update animation
-
     // update camera
     tank::Camera& cam = tank::Game::world()->camera;
     cam.setPos(getPos() - cam.getOrigin());
@@ -116,20 +118,25 @@ void PlayerSpaceship::setRotation(float angle)
 void PlayerSpaceship::startEngine()
 {
     // this ain't all that nice a check
-    if (not moving) {
-        moving = true;
-        sprite->select("engine_start", false,
-                      std::bind(&tank::FrameList::select, sprite.get(),
-                                "engine_run", true, []{}));
-    }
+    sprite->select("engine_start", false,
+                  std::bind(&PlayerSpaceship::runEngine, this));
 }
 
 void PlayerSpaceship::stopEngine()
 {
     // this ain't all that nice a check
-    if (moving) {
-        sprite->select("engine_stop", false,
-                      std::bind(&tank::FrameList::select, sprite.get(),
-                                "engine_still", false, [this]{moving = false;}));
-    }
+    sprite->select("engine_stop", false,
+                  std::bind(&PlayerSpaceship::idleEngine, this));
+}
+
+void PlayerSpaceship::runEngine()
+{
+    sprite->select("engine_run");
+    sprite->start();
+}
+
+void PlayerSpaceship::idleEngine()
+{
+    sprite->select("idle");
+    sprite->start();
 }
