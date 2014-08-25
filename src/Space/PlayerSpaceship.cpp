@@ -14,6 +14,11 @@ PlayerSpaceship::PlayerSpaceship()
     setOrigin(sprite->getSize()/2);
     sprite->centreOrigin();
     setLayer(std::numeric_limits<int>::max());
+
+    // centre hitbox, turning {0,0,w,h} into {-w,-h,w,h} / 2
+    const auto oldHitbox = getHitbox();
+    tank::Vectord newHitbox = {oldHitbox.w / 2, oldHitbox.y / 2};
+    setHitbox({-newHitbox.x, -newHitbox.y, newHitbox.x, newHitbox.y});
 }
 
 void PlayerSpaceship::onAdded()
