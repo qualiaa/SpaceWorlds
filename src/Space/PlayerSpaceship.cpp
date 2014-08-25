@@ -5,14 +5,15 @@
 #include <Tank/Utility/Resources.hpp>
 #include <Tank/Utility/Vector.hpp>
 #include "Universe.hpp"
+#include "Bullet.hpp"
 
-const float PlayerSpaceship::angularAcceleration     {0.1};
+const float PlayerSpaceship::angularAcceleration     {0.115};
 const float PlayerSpaceship::maxAngularSpeed         {1.5};
-const float PlayerSpaceship::acceleration            {0.01};
-const float PlayerSpaceship::maxSpeed                {0.8};
+const float PlayerSpaceship::acceleration            {0.175};
+const float PlayerSpaceship::maxSpeed                {3.2};
 const float PlayerSpaceship::maxSpeedSquared         {maxSpeed * maxSpeed};
 
-PlayerSpaceship::PlayerSpaceship()
+PlayerSpaceship::PlayerSpaceship() : Hittable(10, "enemyBullet")
 {
     setType("PlayerSpaceship");
     auto& image = Resources::get<tank::Image>("assets/graphics/beetle.png");
@@ -58,7 +59,7 @@ void PlayerSpaceship::onAdded()
     auto move = kbd::KeyDown(Key::Up) || kbd::KeyDown(Key::W);
     connect(move, [this](){
         velocity += acceleration * direction;
-        shake();
+        //shake();
     });
 
     auto startEngine = kbd::KeyPress(Key::Up) || kbd::KeyPress(Key::W);
@@ -85,7 +86,7 @@ void PlayerSpaceship::update()
     // update velocity
     if(!(tank::Keyboard::isKeyDown(tank::Key::W)
      ||  tank::Keyboard::isKeyDown(tank::Key::Up))) {
-        velocity /= 1.01;
+        velocity /= 1.0285;
     }
 
     if (speedSqr < acceleration*acceleration*0.01) {
@@ -144,6 +145,12 @@ void PlayerSpaceship::update()
     if(getPos().y > Universe::worldHeight + size.y/2) {
         setPos(tank::Vectorf(getPos().x, -size.y/2));
     }
+
+    //Add bullet
+    if(tank::Keyboard::isKeyPressed(tank::Key::Space)) {
+        getWorld()->makeEntity<Bullet>(getPos(), direction, "playerBullet");
+    }
+
 }
 
 void PlayerSpaceship::setRotation(float angle)
