@@ -9,8 +9,7 @@ PlayerSpaceship::PlayerSpaceship()
 {
     setType("PlayerSpaceship");
     graphic = makeGraphic("assets/graphics/ship_beetle.png");
-    graphic->setScale(3);
-    setPos({400,300});
+    setPos({90,90});
 
     setOrigin(graphic->getSize()/2);
     graphic->centreOrigin();

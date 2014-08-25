@@ -10,7 +10,7 @@ Planet::Planet(tank::Vectorf pos, const std::string& name)
 
 void Planet::onAdded()
 {
-    label_ = getWorld()->makeEntity<Dialog>(getPos()-tank::Vectorf{50,50},
+    label_ = getWorld()->makeEntity<Dialog>(getPos()-(tank::Vectorf{50,50}/3.0),
                                             name_);
     setNameVisible(false);
 }
