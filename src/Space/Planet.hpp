@@ -9,14 +9,14 @@ class Planet : public tank::Entity
     tank::observing_ptr<Dialog> label_;
     std::string name_;
 
+    void setNameVisible(bool visible) {
+        label_->setVisible(visible);
+    }
+
 public:
     Planet(tank::Vectorf pos, const std::string& name = "");
     
     void onAdded() override;
-    
-    void setNameVisible(bool visible) {
-        label_->setVisible(visible);
-    }
     
     void update() override;
 };
