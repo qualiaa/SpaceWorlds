@@ -5,8 +5,8 @@
 #include "../Dialog.hpp"
 #include <random>
 
-const int Universe::worldWidth = 500;
-const int Universe::worldHeight = 500;
+const int Universe::worldWidth = 1000;
+const int Universe::worldHeight = 1000;
 
 Universe::Universe()
 {
@@ -53,19 +53,27 @@ void Universe::genWorld()
             name << "-" << names[rand_ints(rand_eng)];
         }
         
-        int genx = rand_x(rand_eng);
-        int geny = rand_y(rand_eng);
-        
-        for (const auto& p : planets) {
-            auto pos = p->getPos();
-            float dx = pos.x - genx;
-            float dy = pos.y - geny;
-            if (std::sqrt(dx*dx + dy*dy) < 300) {
-                genx = rand_x(rand_eng);
-                geny = rand_y(rand_eng);
+
+        int genx, geny;
+        bool safePlacement;
+
+        do {
+            genx = rand_x(rand_eng);
+            geny = rand_y(rand_eng);
+            safePlacement = true;
+
+            for(const auto& p : planets) {
+                auto pos = p -> getPos();
+                float dx = pos.x - genx;
+                float dy = pos.y - geny;
+                if(dx*dx+dy*dy < 40000) { //radius 200 
+                    safePlacement = false;
+                    break;
+                }
             }
         }
-        
+        while (!safePlacement);
+
         planets.emplace_back(
              makeEntity<Planet>(tank::Vectorf{genx, geny}, name.str()));
     }
