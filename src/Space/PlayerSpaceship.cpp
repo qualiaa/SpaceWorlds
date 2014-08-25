@@ -1,13 +1,14 @@
 #include "PlayerSpaceship.hpp"
 #include <limits>
 #include <functional>
+#include <random>
 #include <Tank/System/Game.hpp>
 #include <Tank/System/Keyboard.hpp>
 
 const float PlayerSpaceship::angularAcceleration     {0.1};
 const float PlayerSpaceship::maxAngularSpeed         {1.5};
-const float PlayerSpaceship::acceleration            {0.05};
-const float PlayerSpaceship::maxSpeed                {6.4};
+const float PlayerSpaceship::acceleration            {0.01};
+const float PlayerSpaceship::maxSpeed                {1};
 const float PlayerSpaceship::maxSpeedSquared         {maxSpeed * maxSpeed};
 
 PlayerSpaceship::PlayerSpaceship()
@@ -53,6 +54,7 @@ void PlayerSpaceship::onAdded()
     auto move = kbd::KeyDown(Key::Up) || kbd::KeyDown(Key::W);
     connect(move, [this](){
         velocity += acceleration * direction;
+        shake();
     });
 
     auto startEngine = kbd::KeyPress(Key::Up) || kbd::KeyPress(Key::W);
@@ -81,10 +83,10 @@ void PlayerSpaceship::update()
      ||  tank::Keyboard::isKeyDown(tank::Key::S)
      ||  tank::Keyboard::isKeyDown(tank::Key::Up)
      ||  tank::Keyboard::isKeyDown(tank::Key::Down))) {
-        velocity /= 1.08;
+        velocity /= 1.001;
     }
 
-    if (speedSqr < 0.001) {
+    if (speedSqr < acceleration*acceleration*0.01) {
         velocity = {};
     }
 
@@ -117,19 +119,17 @@ void PlayerSpaceship::setRotation(float angle)
 
 void PlayerSpaceship::startEngine()
 {
-    // this ain't all that nice a check
     sprite->select("engine_start", false,
-                  std::bind(&PlayerSpaceship::runEngine, this));
+                  std::bind(&PlayerSpaceship::sustainEngine, this));
 }
 
 void PlayerSpaceship::stopEngine()
 {
-    // this ain't all that nice a check
     sprite->select("engine_stop", false,
                   std::bind(&PlayerSpaceship::idleEngine, this));
 }
 
-void PlayerSpaceship::runEngine()
+void PlayerSpaceship::sustainEngine()
 {
     sprite->select("engine_run");
     sprite->start();
@@ -137,6 +137,19 @@ void PlayerSpaceship::runEngine()
 
 void PlayerSpaceship::idleEngine()
 {
+    const auto graphicRotation = sprite->getRotation();
+    const auto rotation = getRotation();
+
+    this->setRotation(graphicRotation + rotation);
+    sprite->setRotation(0);
     sprite->select("idle");
     sprite->start();
+}
+
+void PlayerSpaceship::shake()
+{
+    auto rotation = sprite->getRotation();
+    const auto d0 = std::uniform_real_distribution<float>{-0.5,0.5}(randomGenerator);
+
+    sprite->setRotation(rotation + d0);
 }
