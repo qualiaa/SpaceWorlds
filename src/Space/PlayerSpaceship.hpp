@@ -5,15 +5,26 @@
 class PlayerSpaceship : public tank::Entity
 {
     tank::observing_ptr<tank::FrameList> sprite;
+
     tank::Vectorf velocity {0,0};
     tank::Vectorf direction {0,-1};
-    const float rotationAngle {1};
+
+    float angularVelocity{0};
+
 
 public:
-    static const float acceleration;
+
     PlayerSpaceship();
 
     void onAdded() override;
     void update() override;
     void setRotation(float angle) override;
+
+    static const float acceleration;
+    static const float maxSpeed;
+    static const float maxSpeedSquared;
+
+    static const float angularAcceleration;
+    static const float maxAngularSpeed;
+    
 };
