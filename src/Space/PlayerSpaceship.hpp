@@ -1,10 +1,10 @@
 #pragma once
 #include <Tank/System/Entity.hpp>
-#include <Tank/Graphics/Graphic.hpp>
+#include <Tank/Graphics/FrameList.hpp>
 
 class PlayerSpaceship : public tank::Entity
 {
-    tank::observing_ptr<tank::Graphic> graphic;
+    tank::observing_ptr<tank::FrameList> sprite;
     tank::Vectorf velocity {0,0};
     tank::Vectorf direction {0,-1};
     const float rotationAngle {1};

@@ -8,11 +8,11 @@ const float PlayerSpaceship::acceleration {0.1};
 PlayerSpaceship::PlayerSpaceship()
 {
     setType("PlayerSpaceship");
-    graphic = makeGraphic("assets/graphics/ship_beetle.png");
+    sprite = makeGraphic<tank::FrameList>(tank::Image{"assets/graphics/beetle.png"}, tank::Vectoru{16, 20});
     setPos({90,90});
 
-    setOrigin(graphic->getSize()/2);
-    graphic->centreOrigin();
+    setOrigin(sprite->getSize()/2);
+    sprite->centreOrigin();
     setLayer(std::numeric_limits<int>::max());
 }
 
