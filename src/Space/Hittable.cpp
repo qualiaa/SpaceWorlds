@@ -11,3 +11,10 @@ void Hittable::checkHit()
         remove();
     }
 }
+
+void Hittable::heal(int amt) {
+	health_ += amt;
+	if(health_ + amt > maxHealth_) {
+		health_ = maxHealth_;
+	}
+}

@@ -9,6 +9,8 @@ class Planet : public tank::Entity
     tank::observing_ptr<Dialog> label_;
     std::string name_;
 
+    enum {Blue = 1, Green = 2, Red = 3} type_;
+
     void setNameVisible(bool visible) {
         label_->setVisible(visible);
     }

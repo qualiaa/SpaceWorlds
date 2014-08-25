@@ -145,7 +145,24 @@ void PlayerSpaceship::update()
 
     //Add bullet
     if(tank::Keyboard::isKeyPressed(tank::Key::Space)) {
-        getWorld()->makeEntity<Bullet>(getPos(), direction, "playerBullet");
+        getWorld()->makeEntity<Bullet>(getPos(), direction, "PlayerBullet");
+    }
+
+    //Check for using on planets
+    if(tank::Keyboard::isKeyDown(tank::Key::E)) {
+        auto bluePlanets = collide("BluePlanet");
+        if(bluePlanets.size()>0) {
+            //Blue effect
+        }
+        auto redPlanets = collide("RedPlanet");
+        if(redPlanets.size()>0) {
+            //Red effect
+        }
+        auto greenPlanets = collide("GreenPlanet");
+        if(greenPlanets.size()>0) {
+            //Green effect
+            heal(1);
+        }
     }
 
 }
