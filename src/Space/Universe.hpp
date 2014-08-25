@@ -3,7 +3,7 @@
 
 class Universe : public tank::World
 {
-	void genWorld(unsigned seed);
+	void genWorld();
 
 
 public:
