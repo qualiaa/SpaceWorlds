@@ -2,9 +2,10 @@
 #include <Tank/System/World.hpp>
 
 Planet::Planet(tank::Vectorf pos, const std::string& name)
-    : Entity{pos, "assets/graphics/planet.png"}
+    : Entity{pos}
     , name_{name}
 {
+    makeGraphic("assets/graphics/planet.png");
     setType("Planet");
 }
 
