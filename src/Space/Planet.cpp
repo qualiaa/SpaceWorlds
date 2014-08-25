@@ -5,7 +5,7 @@ Planet::Planet(tank::Vectorf pos, const std::string& name)
     : Entity{pos}
     , name_{name}
 {
-    makeGraphic("assets/graphics/planet.png");
+    makeGraphic("assets/graphics/planet1.png");
     setType("Planet");
 }
 
@@ -19,7 +19,7 @@ void Planet::onAdded()
 void Planet::update()
 {
     auto players = collide("PlayerSpaceship");
-    
+
     if (!players.empty()) {
         setNameVisible(true);
     } else {
