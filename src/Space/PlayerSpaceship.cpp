@@ -21,11 +21,12 @@ PlayerSpaceship::PlayerSpaceship()
                                           tank::Vectoru{1, 1});
     setPos({90,90});
 
-    sprite->add("idle", {0}, std::chrono::milliseconds(0));
+    sprite->add("idle", {0}, std::chrono::milliseconds(1));
     sprite->add("engine_start", {4,5,6,7}, std::chrono::milliseconds(250));
     sprite->add("engine_stop", {7,6,5,4,4}, std::chrono::milliseconds(125));
     sprite->add("engine_run", {6,7}, std::chrono::milliseconds(250));
-    sprite->select("idle");
+    sprite->add("engine_rotate", {4}, std::chrono::milliseconds(1));
+    sprite->select("idle", false);
     sprite->start();
 
     setOrigin(sprite->getSize() / 2);
@@ -45,11 +46,13 @@ void PlayerSpaceship::onAdded()
     auto clockwise = kbd::KeyDown(Key::Right) || kbd::KeyDown(Key::D);
     connect(clockwise, [this](){
         angularVelocity += angularAcceleration;
+        rotateEngine();
     });
 
     auto counterclockwise = kbd::KeyDown(Key::Left) || kbd::KeyDown(Key::A);
     connect(counterclockwise, [this](){
         angularVelocity -= angularAcceleration;
+        rotateEngine();
     });
 
     auto move = kbd::KeyDown(Key::Up) || kbd::KeyDown(Key::W);
@@ -92,8 +95,7 @@ void PlayerSpaceship::update()
     // Update angle
     if(angularVelocity > maxAngularSpeed) {
         angularVelocity = maxAngularSpeed;
-    }
-    else if(angularVelocity < -maxAngularSpeed) {
+    } else if (angularVelocity < -maxAngularSpeed) {
         angularVelocity = -maxAngularSpeed;
     }
     setRotation(getRotation()+angularVelocity);
@@ -155,12 +157,16 @@ void PlayerSpaceship::startEngine()
 {
     sprite->select("engine_start", false,
                   std::bind(&PlayerSpaceship::sustainEngine, this));
+    sprite->start();
+    engineOn = true;
 }
 
 void PlayerSpaceship::stopEngine()
 {
     sprite->select("engine_stop", false,
                   std::bind(&PlayerSpaceship::idleEngine, this));
+    sprite->start();
+    engineOn = false;
 }
 
 void PlayerSpaceship::sustainEngine()
@@ -176,8 +182,18 @@ void PlayerSpaceship::idleEngine()
 
     this->setRotation(graphicRotation + rotation);
     sprite->setRotation(0);
-    sprite->select("idle");
+    sprite->select("idle", false);
     sprite->start();
+}
+
+void PlayerSpaceship::rotateEngine()
+{
+    /* not quite working
+    if (not sprite->playing()) {
+        sprite->select("engine_rotate", false);
+        sprite->start();
+    }
+    */
 }
 
 void PlayerSpaceship::shake()
