@@ -6,6 +6,6 @@
 MainMenuWorld::MainMenuWorld()
 {
     makeEntity<MainMenuBackground>();
-    makeEntity<MainMenuPlay>(tank::Vectorf{400, 400});
+    makeEntity<MainMenuPlay>(tank::Vectorf{200, 400});
     tank::Game::window()->setBackgroundColor({255,255,255});
 }
