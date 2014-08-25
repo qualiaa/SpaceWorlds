@@ -4,6 +4,7 @@
 #include <random>
 #include <Tank/System/Game.hpp>
 #include <Tank/System/Keyboard.hpp>
+#include <Tank/Utility/Resources.hpp>
 
 const float PlayerSpaceship::angularAcceleration     {0.1};
 const float PlayerSpaceship::maxAngularSpeed         {1.5};
@@ -14,8 +15,10 @@ const float PlayerSpaceship::maxSpeedSquared         {maxSpeed * maxSpeed};
 PlayerSpaceship::PlayerSpaceship()
 {
     setType("PlayerSpaceship");
-    sprite = makeGraphic<tank::FrameList>(tank::Image{"assets/graphics/beetle.png"},
-                                          tank::Vectoru{16, 20}, tank::Vectoru{1, 1});
+    auto& image = Resources::get<tank::Image>("assets/graphics/beetle.png");
+    sprite = makeGraphic<tank::FrameList>(image,
+                                          tank::Vectoru{16, 20},
+                                          tank::Vectoru{1, 1});
     setPos({90,90});
 
     sprite->add("idle", {0}, std::chrono::milliseconds(0));
