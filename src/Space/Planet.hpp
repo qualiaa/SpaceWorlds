@@ -14,7 +14,7 @@ class Planet : public tank::Entity
     }
 
 public:
-    Planet(tank::Vectorf pos, const std::string& name = "");
+    Planet(tank::Vectorf pos, const std::string& name);
     
     void onAdded() override;
     

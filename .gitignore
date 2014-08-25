@@ -20,6 +20,6 @@
 *.out
 *.app
 
-build/
+build*/
 *.swp
 *.user
