@@ -6,6 +6,7 @@ class Hittable : public tank::Entity
     int maxHealth_;
     int health_;
     std::string bulletType_;
+
 public:
     Hittable(int health, std::string bulletType)
         : maxHealth_{health}

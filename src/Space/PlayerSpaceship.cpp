@@ -37,6 +37,11 @@ PlayerSpaceship::PlayerSpaceship() : Hittable(10, "EnemyBullet")
     // centre hitbox
     const auto oldHitbox = getHitbox();
     setHitbox({-oldHitbox.w / 2, -oldHitbox.h / 2, oldHitbox.w, oldHitbox.h});
+
+    // load sfx
+    thruster = Resources::get<tank::SoundEffect>("assets/sounds/thruster3.ogg");
+    thruster.setVolume(5);
+    thruster.setLoop(true);
 }
 
 void PlayerSpaceship::onAdded()
@@ -88,6 +93,7 @@ void PlayerSpaceship::update()
         velocity = velocity.unit() * maxSpeed;
     }
     moveBy(velocity);
+    listener.setPosition({getPos().x,getPos().y,0});
 
     // update velocity
     if(!(tank::Keyboard::isKeyDown(tank::Key::W)
@@ -198,6 +204,7 @@ void PlayerSpaceship::startEngine()
                   std::bind(&PlayerSpaceship::sustainEngine, this));
     sprite->start();
     engineOn = true;
+    thruster.play();
 }
 
 void PlayerSpaceship::stopEngine()
@@ -206,6 +213,7 @@ void PlayerSpaceship::stopEngine()
                   std::bind(&PlayerSpaceship::idleEngine, this));
     sprite->start();
     engineOn = false;
+    thruster.stop();
 }
 
 void PlayerSpaceship::sustainEngine()
