@@ -5,6 +5,7 @@
 #include <Tank/System/Game.hpp>
 #include "../Dialog.hpp"
 #include <random>
+#include "Enemy.hpp"
 
 const int Universe::worldWidth = 1000;
 const int Universe::worldHeight = 1000;
@@ -12,6 +13,9 @@ const int Universe::worldHeight = 1000;
 Universe::Universe()
 {
     makeEntity<PlayerSpaceship>();
+    for (int i = 0; i < 10; ++i) {
+        makeEntity<Enemy>();
+    }
     makeEntity<Minimap>();
     camera.setScale(2);
     tank::Game::window()->setBackgroundColor({9,21,31});
