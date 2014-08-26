@@ -1,7 +1,9 @@
 #include "Enemy.hpp"
+
 #include <chrono>
-#include "Universe.hpp"
+#include <Tank/System/Game.hpp>
 #include <Tank/Utility/Resources.hpp>
+#include "Universe.hpp"
 #include "PlayerSpaceship.hpp"
 #include "Bullet.hpp"
 
@@ -28,15 +30,18 @@ Enemy::Enemy() : Hittable(1, "PlayerBullet")
     sprite_->add("engine_rotate", {4}, std::chrono::milliseconds(1));
     sprite_->select("engine_run", false);
     sprite_->start();
+
+    setOrigin(sprite_->getSize() / 2);
+    sprite_->centreOrigin();
     
-    setPos({rand_x(rand_eng), rand_y(rand_eng)});
+    setPos({rand_x(Universe::randEng), rand_y(Universe::randEng)});
 }
 
 void Enemy::onAdded()
 {
     timer.start();
     bulletTimer.start();
-    auto angle = angles(rand_eng);
+    auto angle = angles(Universe::randEng);
     setRotation(angle);
     player_ = static_cast<Universe&>(*getWorld()).getPlayer();
 }
@@ -54,7 +59,7 @@ void Enemy::update()
     using namespace std::literals;
     if (timer.getTime() > 5s) {
         timer.start();
-        auto angle = angles(rand_eng);
+        auto angle = angles(Universe::randEng);
         setRotation(angle);
     }
     if (bulletTimer.getTime() > 500ms && (getPos() - player_->getPos()).magnitude() < 200) {
@@ -65,4 +70,21 @@ void Enemy::update()
     
     velocity = direction * speed;
     moveBy(velocity);
+
+    tank::Camera& cam = tank::Game::world()->camera;
+    auto size = cam.getOrigin();
+
+    //Thing Wrapping
+    if(getPos().x < -size.x/2) {
+        setPos(tank::Vectorf(Universe::worldWidth+size.x/2, getPos().y));
+    }
+    if(getPos().y < -size.y/2) {
+        setPos(tank::Vectorf(getPos().x, Universe::worldWidth+size.y/2));
+    }
+    if(getPos().x > Universe::worldWidth + size.x/2) {
+        setPos(tank::Vectorf(-size.x/2, getPos().y));
+    }
+    if(getPos().y > Universe::worldHeight + size.y/2) {
+        setPos(tank::Vectorf(getPos().x, -size.y/2));
+    }
 }

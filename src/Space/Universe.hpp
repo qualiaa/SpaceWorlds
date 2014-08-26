@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 #include <Tank/System/World.hpp>
 #include <Tank/Audio/Music.hpp>
 #include "../HudDialog.hpp"
@@ -23,6 +24,8 @@ public:
     static const int worldHeight;
     
     auto getPlayer() {return player_;}
+
+    static std::mt19937 randEng;
 
 private:
     void genWorld();

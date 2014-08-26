@@ -5,12 +5,15 @@
 void Hittable::checkHit()
 {
     auto bullets = collide(bulletType_);
-    for (auto& bullet : bullets) {
+
+    if (not bullets.empty()) {
         health_ -= 1;
-        bullet->remove();
         tank::Timer::delay(std::chrono::milliseconds(50));
         flashFrames += 6;
         flashTimer.start();
+    }
+    for (auto& bullet : bullets) {
+        bullet->remove();
     }
     if (health_ <= 0) {
         remove();

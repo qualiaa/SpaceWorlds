@@ -1,6 +1,6 @@
 #include "Universe.hpp"
 
-#include <random>
+#include <ctime>
 #include <Tank/System/Game.hpp>
 #include <Tank/Graphics/Text.hpp>
 #include <Tank/Utility/Resources.hpp>
@@ -14,10 +14,10 @@
 int Universe::score = 0;
 const int Universe::worldWidth = 1000;
 const int Universe::worldHeight = 1000;
+std::mt19937 Universe::randEng {static_cast<unsigned>(std::time(nullptr))};
 
 Universe::Universe()
 {
-
     struct bg : public tank::Entity {
         bg() {
             makeGraphic("assets/graphics/starmap.png");
@@ -57,9 +57,7 @@ void Universe::genWorld()
 		"foxtrot",	"disco",	"astor",	"cerulean"
 	};
 
-	std::vector<tank::observing_ptr<Planet>> planets = {};
-
-    std::mt19937 rand_eng {std::random_device()()};
+	std::vector<tank::observing_ptr<Planet>> planets = {};;
     std::uniform_real_distribution<float> rand_floats {0,1};
     std::uniform_int_distribution<std::size_t> rand_ints {0, names.size()-1};
     std::uniform_int_distribution<int> rand_x {0, worldWidth};
@@ -70,19 +68,19 @@ void Universe::genWorld()
         std::stringstream name;
         float chance {1};
         
-        while (rand_floats(rand_eng) < chance) {
+        while (rand_floats(randEng) < chance) {
             chance /= 2.5;
-            name << names[rand_ints(rand_eng)] << "-";
+            name << names[rand_ints(randEng)] << "-";
         }
         
         chance = 1;
-        while (rand_floats(rand_eng) < chance) {
+        while (rand_floats(randEng) < chance) {
             chance /= 2.5;
-            name << rand_digit(rand_eng);
+            name << rand_digit(randEng);
         }
         
-        if (rand_floats(rand_eng) < 0.1) {
-            name << "-" << names[rand_ints(rand_eng)];
+        if (rand_floats(randEng) < 0.1) {
+            name << "-" << names[rand_ints(randEng)];
         }
         
 
@@ -90,8 +88,8 @@ void Universe::genWorld()
         bool safePlacement;
 
         do {
-            genx = rand_x(rand_eng);
-            geny = rand_y(rand_eng);
+            genx = rand_x(randEng);
+            geny = rand_y(randEng);
             safePlacement = true;
 
             for(const auto& p : planets) {

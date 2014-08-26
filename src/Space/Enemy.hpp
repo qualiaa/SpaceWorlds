@@ -1,8 +1,8 @@
 #pragma once
-#include "Hittable.hpp"
+#include <random>
 #include <Tank/Graphics/FrameList.hpp>
 #include <Tank/Utility/Timer.hpp>
-#include <random>
+#include "Hittable.hpp"
 #include "Universe.hpp"
 class PlayerSpaceship;
 
@@ -14,8 +14,7 @@ class Enemy : public Hittable
     tank::Vectorf direction {0,-1};
     tank::Timer timer;
     tank::Timer bulletTimer;
-    
-    std::mt19937 rand_eng{std::random_device()()};
+
     std::uniform_real_distribution<float> angles {0, 360};
     
     tank::observing_ptr<PlayerSpaceship> player_;

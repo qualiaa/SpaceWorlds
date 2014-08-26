@@ -1,9 +1,11 @@
 #include "Planet.hpp"
+
 #include <Tank/System/World.hpp>
 #include <random>
 #include <sstream>
 #include <Tank/Utility/Resources.hpp>
 #include <Tank/System/Keyboard.hpp>
+#include "Universe.hpp"
 
 Planet::Planet(tank::Vectorf pos, const std::string& name)
     : Entity{pos}
@@ -11,9 +13,8 @@ Planet::Planet(tank::Vectorf pos, const std::string& name)
 {
     using namespace std::literals;
     //Nothing to see here please move on
-    std::mt19937 rand_eng {std::random_device()()};
     std::uniform_int_distribution<unsigned> rand_dist {1,3};
-    type_ = static_cast<decltype(type_)>(rand_dist(rand_eng));
+    type_ = static_cast<decltype(type_)>(rand_dist(Universe::randEng));
     std::stringstream planettype;
     planettype << "assets/graphics/planet" << type_ << ".png";
     makeGraphic(Resources::get<tank::Image>(planettype.str()));
