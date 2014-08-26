@@ -1,10 +1,12 @@
 #include "Universe.hpp"
+
+#include <random>
+#include <Tank/System/Game.hpp>
+#include <Tank/Utility/Resources.hpp>
+#include "../Dialog.hpp"
 #include "PlayerSpaceship.hpp"
 #include "Planet.hpp"
 #include "Minimap.hpp"
-#include <Tank/System/Game.hpp>
-#include "../Dialog.hpp"
-#include <random>
 
 const int Universe::worldWidth = 1000;
 const int Universe::worldHeight = 1000;
@@ -17,6 +19,16 @@ Universe::Universe()
     tank::Game::window()->setBackgroundColor({9,21,31});
     
     genWorld();
+
+    fightMusic_ = Resources::get<tank::Music>("assets/music/get_fire.ogg");
+    fightMusic_.setLoop(true);
+    fightMusic_.setVolume(200);
+    fightMusic_.play();
+}
+
+Universe::~Universe()
+{
+    fightMusic_.stop();
 }
 
 void Universe::genWorld()
@@ -79,5 +91,4 @@ void Universe::genWorld()
         planets.emplace_back(
              makeEntity<Planet>(tank::Vectorf{genx, geny}, name.str()));
     }
-
 }
