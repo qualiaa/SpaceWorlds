@@ -1,11 +1,17 @@
 #pragma once
+#include <chrono>
 #include <Tank/System/Entity.hpp>
+#include <Tank/Utility/Timer.hpp>
 
 class Hittable : public tank::Entity
 {
     int maxHealth_;
     int health_;
     std::string bulletType_;
+
+    tank::Timer flashTimer;
+    int flashFrames = 0;
+    const unsigned flashTime {50};
 
 public:
     Hittable(int health, std::string bulletType)

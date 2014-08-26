@@ -1,4 +1,5 @@
 #include "Hittable.hpp"
+
 #include <Tank/Utility/Timer.hpp>
 
 void Hittable::checkHit()
@@ -8,9 +9,25 @@ void Hittable::checkHit()
         health_ -= 1;
         bullet->remove();
         tank::Timer::delay(std::chrono::milliseconds(50));
+        flashFrames += 6;
+        flashTimer.start();
     }
     if (health_ <= 0) {
         remove();
+    }
+
+    if (flashFrames > 0)
+    {
+        if (flashTimer.isStarted()) {
+            if (flashTimer.getTime<std::chrono::milliseconds>() > flashTime) {
+                getGraphic()->setVisible(not getGraphic()->isVisible());
+                flashTimer.start();
+                --flashFrames;
+            }
+
+        }
+    } else {
+        flashTimer.stop();
     }
 }
 
