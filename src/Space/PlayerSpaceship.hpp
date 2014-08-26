@@ -13,6 +13,7 @@ class PlayerSpaceship : public Hittable
     float angularVelocity{0};
     std::mt19937_64 randomGenerator;
     bool engineOn {false};
+    tank::Timer timer;
 
 public:
     static const float acceleration;

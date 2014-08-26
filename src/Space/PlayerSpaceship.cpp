@@ -41,6 +41,7 @@ PlayerSpaceship::PlayerSpaceship() : Hittable(10, "EnemyBullet")
 
 void PlayerSpaceship::onAdded()
 {
+    timer.start();
     using kbd = tank::Keyboard;
     using Key = tank::Key;
 
@@ -155,6 +156,13 @@ void PlayerSpaceship::update()
     //Add bullet
     if(tank::Keyboard::isKeyPressed(tank::Key::Space)) {
         getWorld()->makeEntity<Bullet>(getPos(),velocity, direction, "PlayerBullet");
+    }
+    
+    auto redPlanets = collide("RedPlanet");
+    using namespace std::literals;
+    if (redPlanets.size() > 0 && timer.getTime() > 1s) {
+        timer.start();
+        heal(-1);
     }
 
     //Check for using on planets
