@@ -1,5 +1,7 @@
 #pragma once
 #include <random>
+#include <SFML/Audio/Listener.hpp>
+#include <Tank/Audio/SoundEffect.hpp>
 #include <Tank/System/Entity.hpp>
 #include <Tank/Graphics/FrameList.hpp>
 #include "Hittable.hpp"
@@ -13,6 +15,8 @@ class PlayerSpaceship : public Hittable
     float angularVelocity{0};
     std::mt19937_64 randomGenerator;
     bool engineOn {false};
+    tank::SoundEffect thruster;
+    sf::Listener listener;
 
 public:
     static const float acceleration;
