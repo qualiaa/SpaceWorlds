@@ -12,7 +12,7 @@ const int Universe::worldHeight = 1000;
 
 Universe::Universe()
 {
-    makeEntity<PlayerSpaceship>();
+    player_ = makeEntity<PlayerSpaceship>();
     for (int i = 0; i < 10; ++i) {
         makeEntity<Enemy>();
     }
