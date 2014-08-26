@@ -26,7 +26,7 @@ Enemy::Enemy() : Hittable(1, "PlayerBullet")
     sprite_->add("engine_stop", {7,6,5,4,4}, std::chrono::milliseconds(125));
     sprite_->add("engine_run", {6,7}, std::chrono::milliseconds(250));
     sprite_->add("engine_rotate", {4}, std::chrono::milliseconds(1));
-    sprite_->select("idle", false);
+    sprite_->select("engine_run", false);
     sprite_->start();
     
     setPos({rand_x(rand_eng), rand_y(rand_eng)});
@@ -37,8 +37,15 @@ void Enemy::onAdded()
     timer.start();
     bulletTimer.start();
     auto angle = angles(rand_eng);
-    direction = direction.rotate(angle);
+    setRotation(angle);
     player_ = static_cast<Universe&>(*getWorld()).getPlayer();
+}
+
+void Enemy::setRotation(float angle)
+{
+    auto rot = getRotation();
+    Transformable::setRotation(angle);
+    direction = direction.rotate(angle - rot);
 }
 
 void Enemy::update()
@@ -48,7 +55,7 @@ void Enemy::update()
     if (timer.getTime() > 5s) {
         timer.start();
         auto angle = angles(rand_eng);
-        direction = direction.rotate(angle);
+        setRotation(angle);
     }
     if (bulletTimer.getTime() > 500ms && (getPos() - player_->getPos()).magnitude() < 200) {
         bulletTimer.start();

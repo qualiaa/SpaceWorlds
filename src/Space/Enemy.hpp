@@ -19,6 +19,8 @@ class Enemy : public Hittable
     
     tank::observing_ptr<PlayerSpaceship> player_;
     
+    void setRotation(float angle);
+    
 public:
     Enemy();
     
