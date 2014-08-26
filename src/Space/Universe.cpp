@@ -104,5 +104,5 @@ void Universe::genWorld()
 void Universe::update() {
     tank::World::update();
 
-    hud->setText("HEALTH: " + std::to_string(player_->getHealth()));
+    hud->setText("SHIELDS: " + std::to_string(player_->getHealth()) + "0%");
 }
