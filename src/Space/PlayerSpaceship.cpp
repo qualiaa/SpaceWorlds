@@ -13,7 +13,7 @@ const float PlayerSpaceship::acceleration            {0.175};
 const float PlayerSpaceship::maxSpeed                {3.2};
 const float PlayerSpaceship::maxSpeedSquared         {maxSpeed * maxSpeed};
 
-PlayerSpaceship::PlayerSpaceship() : Hittable(10, "enemyBullet")
+PlayerSpaceship::PlayerSpaceship() : Hittable(10, "EnemyBullet")
 {
     setType("PlayerSpaceship");
     auto& image = Resources::get<tank::Image>("assets/graphics/beetle.png");
@@ -79,8 +79,14 @@ void PlayerSpaceship::onAdded()
     });
 }
 
+void PlayerSpaceship::onRemoved()
+{
+    tank::Game::stop();
+}
+
 void PlayerSpaceship::update()
 {
+    Hittable::update();
     // Update position
     const float speedSqr = velocity.magnitudeSquared();
     if(speedSqr > maxSpeedSquared) {
@@ -154,7 +160,30 @@ void PlayerSpaceship::update()
 
     //Add bullet
     if(tank::Keyboard::isKeyPressed(tank::Key::Space)) {
-        getWorld()->makeEntity<Bullet>(getPos(), direction, "playerBullet");
+        getWorld()->makeEntity<Bullet>(getPos(),velocity, direction, "PlayerBullet");
+    }
+
+    //Check for using on planets
+    if(tank::Keyboard::isKeyPressed(tank::Key::E)) {
+        auto bluePlanets = collide("BluePlanet");
+        if(bluePlanets.size()>0) {
+            //Blue stuff
+        }
+        auto redPlanets = collide("RedPlanet");
+        if(redPlanets.size()>0) {
+            //Red stuff
+        }
+        auto greenPlanets = collide("GreenPlanet");
+        if(greenPlanets.size()>0) {
+            //Green stuff
+            heal(1);
+        }
+        /*
+        auto wormholes = collide("Wormhole");
+        if(wormholes.size() < 0) {
+            //Wormhole stuff
+        }
+        */
     }
 
 }

@@ -28,6 +28,7 @@ public:
     PlayerSpaceship();
 
     void onAdded() override;
+    void onRemoved() override;
     void update() override;
     void setRotation(float angle) override;
 

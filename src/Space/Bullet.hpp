@@ -8,7 +8,7 @@ class Bullet : public tank::Entity
     tank::Vectorf velocity 	{0, 0};
 
 public:
-    Bullet(tank::Vectorf pos, tank::Vectorf direction, const std::string& type);
+    Bullet(tank::Vectorf pos, tank::Vectorf vel, tank::Vectorf direction, const std::string& type);
 
     void update() override;
     void setRotation(float angle) override;

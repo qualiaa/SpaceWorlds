@@ -2,10 +2,13 @@
 
 #include <random>
 #include <Tank/System/Game.hpp>
+#include <Tank/Graphics/Text.hpp>
 #include <Tank/Utility/Resources.hpp>
 #include "../Dialog.hpp"
-#include "PlayerSpaceship.hpp"
+#include "../HudDialog.hpp"
 #include "Planet.hpp"
+#include "PlayerSpaceship.hpp"
+#include "Enemy.hpp"
 #include "Minimap.hpp"
 
 const int Universe::worldWidth = 1000;
@@ -13,10 +16,15 @@ const int Universe::worldHeight = 1000;
 
 Universe::Universe()
 {
-    makeEntity<PlayerSpaceship>();
+    player_ = makeEntity<PlayerSpaceship>();
+    for (int i = 0; i < 10; ++i) {
+        makeEntity<Enemy>();
+    }
     makeEntity<Minimap>();
     camera.setScale(2);
     tank::Game::window()->setBackgroundColor({9,21,31});
+
+    hud = makeEntity<HudDialog>(tank::Vectorf{0,0}, "HELLO THERE");
     
     genWorld();
 
@@ -91,4 +99,10 @@ void Universe::genWorld()
         planets.emplace_back(
              makeEntity<Planet>(tank::Vectorf{genx, geny}, name.str()));
     }
+}
+
+void Universe::update() {
+    tank::World::update();
+
+    hud->setText("HEALTH: " + std::to_string(player_->getHealth()));
 }
