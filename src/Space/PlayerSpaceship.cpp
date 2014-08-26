@@ -106,10 +106,11 @@ void PlayerSpaceship::update()
     }
 
     // Update angle
-    if(angularVelocity > maxAngularSpeed) {
-        angularVelocity = maxAngularSpeed;
-    } else if (angularVelocity < -maxAngularSpeed) {
-        angularVelocity = -maxAngularSpeed;
+    const auto angularSpeedCap = maxAngularSpeed * (engineOn ? 1.0 : 5.0);
+    if(angularVelocity > angularSpeedCap) {
+        angularVelocity = angularSpeedCap;
+    } else if (angularVelocity < -angularSpeedCap) {
+        angularVelocity = -angularSpeedCap;
     }
     setRotation(getRotation()+angularVelocity);
     if(!(tank::Keyboard::isKeyDown(tank::Key::A)
@@ -198,7 +199,7 @@ void PlayerSpaceship::setRotation(float angle)
 void PlayerSpaceship::startEngine()
 {
     sprite->select("engine_start", false,
-                  std::bind(&PlayerSpaceship::sustainEngine, this));
+                   std::bind(&PlayerSpaceship::sustainEngine, this));
     sprite->start();
     engineOn = true;
     thruster.play();
@@ -207,7 +208,7 @@ void PlayerSpaceship::startEngine()
 void PlayerSpaceship::stopEngine()
 {
     sprite->select("engine_stop", false,
-                  std::bind(&PlayerSpaceship::idleEngine, this));
+                   std::bind(&PlayerSpaceship::idleEngine, this));
     sprite->start();
     engineOn = false;
     thruster.stop();
