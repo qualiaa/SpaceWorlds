@@ -10,8 +10,12 @@ Minimap::Minimap()
     graphicSmall_ = makeGraphic(Resources::get<tank::Image>("assets/graphics/minimap.png"));
     graphicBig_ = makeGraphic(Resources::get<tank::Image>("assets/graphics/minimap2.png"));
     setPos(tank::Game::window()->getSize() - graphicSmall_->getSize());
+    
     graphicSmall_->setScale(2);
+    graphicSmall_->setVisible(false);
     graphicBig_->setScale(2);
+    graphicBig_->setVisible(false);
+    
     setLayer(101);
 }
 
