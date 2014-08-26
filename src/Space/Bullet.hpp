@@ -1,10 +1,11 @@
 #pragma once
 #include <Tank/System/Entity.hpp>
 #include <Tank/Utility/Vector.hpp>
+#include <Tank/Utility/Timer.hpp>
 
 class Bullet : public tank::Entity
 {
-
+	tank::Timer lifeTimer;
     tank::Vectorf velocity 	{0, 0};
 
 public:

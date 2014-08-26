@@ -12,22 +12,24 @@ Bullet::Bullet(tank::Vectorf pos, tank::Vectorf vel, tank::Vectorf direction, co
     : Entity(pos)
     , velocity{vel + direction * speed}
 {
-
     setType(type);
-
     makeGraphic(Resources::get<tank::Image>("assets/graphics/bullet.png"));
-
     setRotation(tank::Vectorf{0,-1}.getAngle(direction));
     
     auto blast = Resources::get<tank::SoundEffect>("assets/sounds/shoot_sound.wav");
     //blast.setVolume(10);
     //blast.setRelativeToListener(false);
     blast.play();
+    lifeTimer.start();
 }
 
 void Bullet::update()
 {
-
+    using namespace std::literals;
+    if (lifeTimer.getTime() > 10s)
+    {
+        remove();
+    }
     moveBy(velocity);
 
 }
