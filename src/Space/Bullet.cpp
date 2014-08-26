@@ -7,9 +7,9 @@
 
 const float Bullet::speed     {2};
 
-Bullet::Bullet(tank::Vectorf pos, tank::Vectorf direction, const std::string& type)
+Bullet::Bullet(tank::Vectorf pos, tank::Vectorf vel, tank::Vectorf direction, const std::string& type)
     : Entity(pos)
-    , velocity{direction * speed}
+    , velocity{vel + direction * speed}
 {
 
     setType(type);

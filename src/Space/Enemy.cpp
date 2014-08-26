@@ -2,10 +2,12 @@
 #include <chrono>
 #include "Universe.hpp"
 #include <Tank/Utility/Resources.hpp>
+#include "PlayerSpaceship.hpp"
+#include "Bullet.hpp"
 
 const float Enemy::speed = 1;
 
-Enemy::Enemy() : Hittable(5, "PlayerBullet")
+Enemy::Enemy() : Hittable(1, "PlayerBullet")
 {
     std::uniform_real_distribution<float> rand_x {0,
         static_cast<float>(Universe::worldWidth)};
@@ -33,17 +35,25 @@ Enemy::Enemy() : Hittable(5, "PlayerBullet")
 void Enemy::onAdded()
 {
     timer.start();
+    bulletTimer.start();
     auto angle = angles(rand_eng);
     direction = direction.rotate(angle);
+    player_ = static_cast<Universe&>(*getWorld()).getPlayer();
 }
 
 void Enemy::update()
 {
+    Hittable::update();
     using namespace std::literals;
-    if (timer.getTime() > 10s) {
+    if (timer.getTime() > 5s) {
         timer.start();
         auto angle = angles(rand_eng);
         direction = direction.rotate(angle);
+    }
+    if (bulletTimer.getTime() > 500ms && (getPos() - player_->getPos()).magnitude() < 200) {
+        bulletTimer.start();
+        auto dir = (player_->getPos() - getPos()).unit();
+        getWorld()->makeEntity<Bullet>(getPos(), velocity, dir, "EnemyBullet");
     }
     
     velocity = direction * speed;

@@ -13,7 +13,7 @@ const float PlayerSpaceship::acceleration            {0.175};
 const float PlayerSpaceship::maxSpeed                {3.2};
 const float PlayerSpaceship::maxSpeedSquared         {maxSpeed * maxSpeed};
 
-PlayerSpaceship::PlayerSpaceship() : Hittable(10, "enemyBullet")
+PlayerSpaceship::PlayerSpaceship() : Hittable(10, "EnemyBullet")
 {
     setType("PlayerSpaceship");
     auto& image = Resources::get<tank::Image>("assets/graphics/beetle.png");
@@ -74,8 +74,14 @@ void PlayerSpaceship::onAdded()
     });
 }
 
+void PlayerSpaceship::onRemoved()
+{
+    tank::Game::stop();
+}
+
 void PlayerSpaceship::update()
 {
+    Hittable::update();
     // Update position
     const float speedSqr = velocity.magnitudeSquared();
     if(speedSqr > maxSpeedSquared) {
@@ -148,7 +154,7 @@ void PlayerSpaceship::update()
 
     //Add bullet
     if(tank::Keyboard::isKeyPressed(tank::Key::Space)) {
-        getWorld()->makeEntity<Bullet>(getPos(), direction, "PlayerBullet");
+        getWorld()->makeEntity<Bullet>(getPos(),velocity, direction, "PlayerBullet");
     }
 
     //Check for using on planets

@@ -17,4 +17,6 @@ public:
     void heal(int amt);
     
     int getHealth() {return health_;}
+    
+    void update() override {checkHit();}
 };
