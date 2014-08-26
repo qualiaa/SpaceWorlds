@@ -7,7 +7,7 @@ void Hittable::checkHit()
     for (auto& bullet : bullets) {
         health_ -= 1;
         bullet->remove();
-        tank::Timer::delay(std::chrono::milliseconds(10));
+        tank::Timer::delay(std::chrono::milliseconds(50));
     }
     if (health_ <= 0) {
         remove();
