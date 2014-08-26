@@ -16,6 +16,15 @@ const int Universe::worldHeight = 1000;
 
 Universe::Universe()
 {
+
+    struct bg : public tank::Entity {
+        bg() {
+            makeGraphic("assets/graphics/starmap.png");
+            setLayer(std::numeric_limits<int>::min());
+            moveBy({-250,-250});
+        }
+    };
+    makeEntity<bg>();
     player_ = makeEntity<PlayerSpaceship>();
     for (int i = 0; i < 10; ++i) {
         makeEntity<Enemy>();
