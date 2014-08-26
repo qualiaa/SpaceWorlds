@@ -6,7 +6,7 @@ class Minimap : public tank::Entity
 {
     tank::observing_ptr<tank::Graphic> graphicSmall_;
     tank::observing_ptr<tank::Graphic> graphicBig_;
-    enum class State { None, Small, Large } state {State::Small};
+    enum class State { None, Small, Large } state {State::None};
 
 public:
     
