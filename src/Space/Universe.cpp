@@ -11,6 +11,7 @@
 #include "Enemy.hpp"
 #include "Minimap.hpp"
 
+int Universe::score = 0;
 const int Universe::worldWidth = 1000;
 const int Universe::worldHeight = 1000;
 
@@ -113,5 +114,6 @@ void Universe::genWorld()
 void Universe::update() {
     tank::World::update();
 
-    hud->setText("SHIELDS: " + std::to_string(player_->getHealth()) + "0%");
+    hud->setText("SHIELDS: " + std::to_string(player_->getHealth()) + "0%\n"
+        + "SCORE: " + std::to_string(score));
 }

@@ -3,6 +3,7 @@
 #include <Tank/Graphics/FrameList.hpp>
 #include <Tank/Utility/Timer.hpp>
 #include <random>
+#include "Universe.hpp"
 class PlayerSpaceship;
 
 class Enemy : public Hittable
@@ -20,6 +21,11 @@ class Enemy : public Hittable
     tank::observing_ptr<PlayerSpaceship> player_;
     
     void setRotation(float angle);
+
+    void onRemoved() override {
+        Universe::score++;
+        getWorld()->makeEntity<Enemy>();
+    }
     
 public:
     Enemy();

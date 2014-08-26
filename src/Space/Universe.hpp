@@ -17,6 +17,8 @@ public:
 
     void update() override;
 
+    static int score;
+
     static const int worldWidth;
     static const int worldHeight;
     
