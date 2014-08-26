@@ -3,7 +3,9 @@
 #include "Planet.hpp"
 #include "Minimap.hpp"
 #include <Tank/System/Game.hpp>
+#include <Tank/Graphics/Text.hpp>
 #include "../Dialog.hpp"
+#include "../HudDialog.hpp"
 #include <random>
 #include "Enemy.hpp"
 
@@ -19,6 +21,8 @@ Universe::Universe()
     makeEntity<Minimap>();
     camera.setScale(2);
     tank::Game::window()->setBackgroundColor({9,21,31});
+
+    hud = makeEntity<HudDialog>(tank::Vectorf{0,0}, "HELLO THERE");
     
     genWorld();
 }
@@ -84,4 +88,10 @@ void Universe::genWorld()
              makeEntity<Planet>(tank::Vectorf{genx, geny}, name.str()));
     }
 
+}
+
+void Universe::update() {
+    tank::World::update();
+
+    hud->setText("HEALTH: " + std::to_string(player_->getHealth()));
 }

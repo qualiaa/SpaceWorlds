@@ -152,20 +152,26 @@ void PlayerSpaceship::update()
     }
 
     //Check for using on planets
-    if(tank::Keyboard::isKeyDown(tank::Key::E)) {
+    if(tank::Keyboard::isKeyPressed(tank::Key::E)) {
         auto bluePlanets = collide("BluePlanet");
         if(bluePlanets.size()>0) {
-            //Blue effect
+            //Blue stuff
         }
         auto redPlanets = collide("RedPlanet");
         if(redPlanets.size()>0) {
-            //Red effect
+            //Red stuff
         }
         auto greenPlanets = collide("GreenPlanet");
         if(greenPlanets.size()>0) {
-            //Green effect
+            //Green stuff
             heal(1);
         }
+        /*
+        auto wormholes = collide("Wormhole");
+        if(wormholes.size() < 0) {
+            //Wormhole stuff
+        }
+        */
     }
 
 }
