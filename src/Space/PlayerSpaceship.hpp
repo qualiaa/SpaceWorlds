@@ -15,6 +15,7 @@ class PlayerSpaceship : public Hittable
     float angularVelocity{0};
     std::mt19937_64 randomGenerator;
     bool engineOn {false};
+    tank::Timer timer;
     tank::SoundEffect thruster;
     sf::Listener listener;
 

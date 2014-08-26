@@ -19,7 +19,6 @@ Planet::Planet(tank::Vectorf pos, const std::string& name)
     makeGraphic(Resources::get<tank::Image>(planettype.str()));
     setType("Planet");
 
-
     switch (type_) {
     case Blue:
         addType("BluePlanet");
@@ -31,7 +30,6 @@ Planet::Planet(tank::Vectorf pos, const std::string& name)
         addType("GreenPlanet");
         break;
     }
-    setType("Planet");
 }
 
 void Planet::onAdded()
