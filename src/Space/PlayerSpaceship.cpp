@@ -154,7 +154,10 @@ void PlayerSpaceship::update()
 
     //Add bullet
     if(tank::Keyboard::isKeyPressed(tank::Key::Space)) {
-        getWorld()->makeEntity<Bullet>(getPos(),velocity, direction, "PlayerBullet");
+        tank::Vectorf p = getPos() + direction * 3 + direction.rotate(-90)*4;
+        getWorld()->makeEntity<Bullet>(p,velocity, direction, "PlayerBullet");
+        p += direction.rotate(90) * 8;
+        getWorld()->makeEntity<Bullet>(p,velocity, direction, "PlayerBullet");
     }
 
     //Check for using on planets
