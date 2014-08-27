@@ -15,44 +15,42 @@ Binaries
 * [OS/X x64](https://github.com/DavidTruby/SpaceWorlds/releases/download/v1.0/SpaceWorlds-linux-x86_64.tar.xz)
 * [Linux x64](https://github.com/DavidTruby/SpaceWorlds/releases/download/v1.0/SpaceWorlds-osx-x86_64.tar.xz)
 
-### Requirements
+#### Requirements
 
-####OS/X & Linux
-* [libsfml2.1](http://sfml-dev.org)
-* [libboost](http://boost.org)
+#####OS/X & Linux
+[libsfml2.1](http://sfml-dev.org)  
+[libboost](http://boost.org)  
 
 Build
 -----
 
-###Commands
-
-    git clone git@github.com:/CardSmack.git
-    cd CardSmack
+    git clone git@github.com:DavidTruby/SpaceWorlds.git
+    cd SpaceWorlds
     git submodule init && git submodule update
     mkdir build
     cd build
     cmake ..
     make
 
-###Requirements 
+####Requirements 
 
-* C++14 compiler (MinGW on Windows)
-* [CMake](http://www.cmake.org/)
-* [libsfml2.1](http://sfml-dev.org)
-* [libboost](http://boost.org)
+C++14 compiler (MinGW on Windows)  
+[CMake](http://www.cmake.org/)  
+[libsfml2.1](http://sfml-dev.org)  
+[libboost](http://boost.org)  
 
 Credits
 -------
 
-###Programming 
-David Truby ([@DavidTruby](http://twitter.com/DavidTruby))
-Richard Perry
-[Jamie Bayne](http://gazokblog.co.uk) ([@quaIaa](http://twitter.com/quaIaa))
-[Alex Dixon](http://www.alexbrainbox.co.uk/) ([@Alexbrainbox](http://twitter.com/Alexbrainbox)
+####Programming 
+David Truby ([@DavidTruby](http://twitter.com/DavidTruby))  
+Richard Perry  
+[Jamie Bayne](http://gazokblog.co.uk) ([@quaIaa](http://twitter.com/quaIaa))  
+[Alex Dixon](http://www.alexbrainbox.co.uk/) ([@Alexbrainbox](http://twitter.com/Alexbrainbox))  
 [Chris Leonard](http://veltas.uwcs.co.uk/) ([@VeltasV](http://twitter.com/VeltasV))
 
-###Art
+####Art
 Richard Perry
 
-###Music and Sound
+####Music and Sound
 [Jamie Bayne](http://gazokblog.co.uk) ([@quaIaa](http://twitter.com/quaIaa))
