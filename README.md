@@ -44,7 +44,7 @@ Credits
 ####Programming 
 David Truby ([@DavidTruby](http://twitter.com/DavidTruby))  
 Richard Perry  
-[Jamie Bayne](http://jamiebayne.co.uk) ([@quaIaa](http://twitter.com/quaIiaa))  
+[Jamie Bayne](http://jamiebayne.co.uk) ([@quaIiaa](http://twitter.com/quaIiaa))  
 [Alex Dixon](http://www.alexbrainbox.co.uk/) ([@Alexbrainbox](http://twitter.com/Alexbrainbox))  
 [Chris Leonard](http://veltas.uwcs.co.uk/) ([@VeltasV](http://twitter.com/VeltasV))
 
@@ -52,4 +52,4 @@ Richard Perry
 Richard Perry
 
 ####Music and Sound
-[Jamie Bayne](http://jamiebayne.co.uk) ([@quaIaa](http://twitter.com/quaIiaa))
+[Jamie Bayne](http://jamiebayne.co.uk) ([@quaIiaa](http://twitter.com/quaIiaa))
