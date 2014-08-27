@@ -1,8 +1,7 @@
 SpaceWorlds
 ===========
 
-An [LD48](http://ludumdare.com) Jam entry.
-
+An [LD48](http://ludumdare.com) Jam entry.  
 Theme: Connected Worlds
 
 [Entry Page](http://www.ludumdare.com/compo/ludum-dare-30/?action=preview&uid=20410)
@@ -28,7 +27,7 @@ Build
     cd SpaceWorlds
     git submodule init && git submodule update
     mkdir build
-    cd build
+    cd !$
     cmake ..
     make
 
@@ -45,7 +44,7 @@ Credits
 ####Programming 
 David Truby ([@DavidTruby](http://twitter.com/DavidTruby))  
 Richard Perry  
-[Jamie Bayne](http://gazokblog.co.uk) ([@quaIaa](http://twitter.com/quaIaa))  
+[Jamie Bayne](http://jamiebayne.co.uk) ([@quaIaa](http://twitter.com/quaIiaa))  
 [Alex Dixon](http://www.alexbrainbox.co.uk/) ([@Alexbrainbox](http://twitter.com/Alexbrainbox))  
 [Chris Leonard](http://veltas.uwcs.co.uk/) ([@VeltasV](http://twitter.com/VeltasV))
 
@@ -53,4 +52,4 @@ Richard Perry
 Richard Perry
 
 ####Music and Sound
-[Jamie Bayne](http://gazokblog.co.uk) ([@quaIaa](http://twitter.com/quaIaa))
+[Jamie Bayne](http://jamiebayne.co.uk) ([@quaIaa](http://twitter.com/quaIiaa))
