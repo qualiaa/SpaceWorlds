@@ -11,13 +11,14 @@ Planet::Planet(tank::Vectorf pos, const std::string& name)
     : Entity{pos}
     , name_{name}
 {
+    using res = tank::Resources;
     using namespace std::literals;
     //Nothing to see here please move on
     std::uniform_int_distribution<unsigned> rand_dist {1,3};
-    type_ = static_cast<decltype(type_)>(rand_dist(Universe::randEng));
+    type_ = static_cast<Type>(rand_dist(Universe::randEng));
     std::stringstream planettype;
     planettype << "assets/graphics/planet" << type_ << ".png";
-    makeGraphic(Resources::get<tank::Image>(planettype.str()));
+    makeGraphic(res::get<tank::Image>(planettype.str()));
     setType("Planet");
 
     switch (type_) {

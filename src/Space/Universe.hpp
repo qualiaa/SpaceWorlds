@@ -17,6 +17,7 @@ public:
     virtual ~Universe();
 
     void update() override;
+    virtual void onAdded() override;
 
     static int score;
 

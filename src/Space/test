@@ -1,0 +1,21 @@
+#include <functional>
+
+template <typename T, typename U>
+void clamp(U var, T lower,T upper, std::function setFunc = std::bind(U::operator=,var));
+
+int main()
+{
+    int x = 0;
+
+    x += 50;
+    clamp(x,0,2);
+
+    
+}
+
+template <typename T, typename U>
+void clamp(U var, T x1,T x2, std::function setFunc = std::bind(U::operator=,var))
+{
+    
+}
+

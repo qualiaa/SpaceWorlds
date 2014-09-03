@@ -9,4 +9,6 @@ class MainMenuWorld : public tank::World
 public:
     MainMenuWorld();
     virtual ~MainMenuWorld();
+
+    void startGame();
 };

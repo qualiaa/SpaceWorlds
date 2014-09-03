@@ -18,11 +18,11 @@ std::mt19937 Universe::randEng {static_cast<unsigned>(std::time(nullptr))};
 
 Universe::Universe()
 {
+    using res = tank::Resources;
     struct bg : public tank::Entity {
-        bg() {
-            makeGraphic("assets/graphics/starmap.png");
+        bg() : tank::Entity({-250,-250}) {
+            makeGraphic(res::get<tank::Image>("assets/graphics/starmap.png"));
             setLayer(std::numeric_limits<int>::min());
-            moveBy({-250,-250});
         }
     };
     makeEntity<bg>();
@@ -35,12 +35,17 @@ Universe::Universe()
     tank::Game::window()->setBackgroundColor({9,21,31});
 
     hud = makeEntity<HudDialog>(tank::Vectorf{0,0}, "HELLO THERE");
-    
+
     genWorld();
 
-    fightMusic_ = Resources::get<tank::Music>("assets/music/get_fire.ogg");
+    fightMusic_ = res::get<tank::Music>("assets/music/get_fire.ogg");
     fightMusic_.setLoop(true);
     fightMusic_.setVolume(200);
+    score = 0;
+}
+
+void Universe::onAdded()
+{
     fightMusic_.play();
 }
 
@@ -63,26 +68,25 @@ void Universe::genWorld()
     std::uniform_int_distribution<int> rand_x {0, worldWidth};
     std::uniform_int_distribution<int> rand_y {0, worldHeight};
     std::uniform_int_distribution<int> rand_digit {0,9};
-    
+
     for (std::size_t i = 0; i < names.size(); ++i) {
         std::stringstream name;
         float chance {1};
-        
+
         while (rand_floats(randEng) < chance) {
             chance /= 2.5;
             name << names[rand_ints(randEng)] << "-";
         }
-        
+
         chance = 1;
         while (rand_floats(randEng) < chance) {
             chance /= 2.5;
             name << rand_digit(randEng);
         }
-        
+
         if (rand_floats(randEng) < 0.1) {
             name << "-" << names[rand_ints(randEng)];
         }
-        
 
         int genx, geny;
         bool safePlacement;
@@ -96,7 +100,7 @@ void Universe::genWorld()
                 auto pos = p -> getPos();
                 float dx = pos.x - genx;
                 float dy = pos.y - geny;
-                if(dx*dx+dy*dy < 40000) { //radius 200 
+                if(dx*dx+dy*dy < 40000) { //radius 200
                     safePlacement = false;
                     break;
                 }
@@ -109,9 +113,11 @@ void Universe::genWorld()
     }
 }
 
-void Universe::update() {
+void Universe::update()
+{
+    using namespace std::literals;
     tank::World::update();
 
-    hud->setText("SHIELDS: " + std::to_string(player_->getHealth()) + "0%\n"
+    hud->setText("SHIELDS: "s + std::to_string(player_->getHealth()) + "0%\n"
         + "SCORE: " + std::to_string(score));
 }

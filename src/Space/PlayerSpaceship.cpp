@@ -1,126 +1,50 @@
 #include "PlayerSpaceship.hpp"
+
 #include <functional>
 #include <Tank/System/Game.hpp>
 #include <Tank/System/Keyboard.hpp>
-#include <Tank/Utility/Resources.hpp>
-#include <Tank/Utility/Vector.hpp>
 #include "Universe.hpp"
-#include "Bullet.hpp"
 
-const float PlayerSpaceship::angularAcceleration     {0.115};
-const float PlayerSpaceship::maxAngularSpeed         {1.5};
-const float PlayerSpaceship::acceleration            {0.175};
-const float PlayerSpaceship::maxSpeed                {3.2};
-const float PlayerSpaceship::maxSpeedSquared         {maxSpeed * maxSpeed};
-
-PlayerSpaceship::PlayerSpaceship() : Hittable(10, "EnemyBullet")
+PlayerSpaceship::PlayerSpaceship()
+    : Ship({90,90}, 10)
 {
-    setType("PlayerSpaceship");
-    auto& image = Resources::get<tank::Image>("assets/graphics/beetle.png");
-    sprite = makeGraphic<tank::FrameList>(image,
-                                          tank::Vectoru{16, 20},
-                                          tank::Vectoru{1, 1});
-    setPos({90,90});
-
-    sprite->add("idle", {0}, std::chrono::milliseconds(1));
-    sprite->add("engine_start", {4,5,6,7}, std::chrono::milliseconds(250));
-    sprite->add("engine_stop", {7,6,5,4,4}, std::chrono::milliseconds(125));
-    sprite->add("engine_run", {6,7}, std::chrono::milliseconds(250));
-    sprite->add("engine_rotate", {4}, std::chrono::milliseconds(1));
-    sprite->select("idle", false);
-    sprite->start();
-
-    setOrigin(sprite->getSize() / 2);
-    sprite->centreOrigin();
     setLayer(100);
-
-    // centre hitbox
-    const auto oldHitbox = getHitbox();
-    setHitbox({-oldHitbox.w / 2, -oldHitbox.h / 2, oldHitbox.w, oldHitbox.h});
-
-    // load sfx
-    thruster = Resources::get<tank::SoundEffect>("assets/sounds/thruster3.ogg");
-    thruster.setVolume(5);
-    thruster.setLoop(true);
+    setType("player");
 }
 
 void PlayerSpaceship::onAdded()
 {
-    timer.start();
     using kbd = tank::Keyboard;
     using Key = tank::Key;
 
-    auto clockwise = kbd::KeyDown(Key::Right) || kbd::KeyDown(Key::D);
-    connect(clockwise, [this](){
-        angularVelocity += angularAcceleration;
-        rotateEngine();
-    });
-
-    auto counterclockwise = kbd::KeyDown(Key::Left) || kbd::KeyDown(Key::A);
-    connect(counterclockwise, [this](){
-        angularVelocity -= angularAcceleration;
-        rotateEngine();
-    });
-
     auto move = kbd::KeyDown(Key::Up) || kbd::KeyDown(Key::W);
-    connect(move, [this](){
-        velocity += acceleration * direction;
-        //shake();
-    });
-
-    auto startEngine = kbd::KeyPress(Key::Up) || kbd::KeyPress(Key::W);
-    connect(startEngine, std::bind(&PlayerSpaceship::startEngine, this));
-
-    auto stopEngine = kbd::KeyRelease(Key::Up) || kbd::KeyRelease(Key::W);
-    connect(stopEngine, std::bind(&PlayerSpaceship::stopEngine, this));
+    connect(move, std::bind(&Ship::thrust, this));
 
     auto halt = kbd::KeyDown(Key::Down) || kbd::KeyDown(Key::S);
-    connect(halt, [this]() {
-        velocity /= 1.06;
-    });
+    connect(halt, std::bind(&Ship::halt, this));
+
+    auto clockwise = kbd::KeyDown(Key::Right) || kbd::KeyDown(Key::D);
+    connect(clockwise, std::bind(&Ship::rotateCW, this));
+
+    auto counterclockwise = kbd::KeyDown(Key::Left) || kbd::KeyDown(Key::A);
+    connect(counterclockwise, std::bind(&Ship::rotateCCW, this));
+
+    auto shoot = kbd::KeyPress(Key::Space);
+    connect(shoot, std::bind(&Ship::shoot, this));
+
+    auto engineStop = kbd::KeyRelease(Key::Up) || kbd::KeyRelease(Key::W);
+    connect(engineStop, std::bind(&Ship::engineStop, this));
 }
 
 void PlayerSpaceship::onRemoved()
 {
-    tank::Game::stop();
+    tank::Game::popWorld();
+    tank::Game::makeWorld<Universe>();
 }
 
 void PlayerSpaceship::update()
 {
-    Hittable::update();
-    // Update position
-    const float speedSqr = velocity.magnitudeSquared();
-    if(speedSqr > maxSpeedSquared) {
-        velocity = velocity.unit() * maxSpeed;
-    }
-    moveBy(velocity);
-    listener.setPosition({getPos().x,getPos().y,0});
-
-    // update velocity
-    if(!(tank::Keyboard::isKeyDown(tank::Key::W)
-     ||  tank::Keyboard::isKeyDown(tank::Key::Up))) {
-        velocity /= 1.0285;
-    }
-
-    if (speedSqr < acceleration*acceleration*0.01) {
-        velocity = {};
-    }
-
-    // Update angle
-    const auto angularSpeedCap = maxAngularSpeed * (engineOn ? 1.0 : 5.0);
-    if(angularVelocity > angularSpeedCap) {
-        angularVelocity = angularSpeedCap;
-    } else if (angularVelocity < -angularSpeedCap) {
-        angularVelocity = -angularSpeedCap;
-    }
-    setRotation(getRotation()+angularVelocity);
-    if(!(tank::Keyboard::isKeyDown(tank::Key::A)
-      || tank::Keyboard::isKeyDown(tank::Key::D)
-      || tank::Keyboard::isKeyDown(tank::Key::Left)
-      || tank::Keyboard::isKeyDown(tank::Key::Right))) {
-        angularVelocity /= 1.05;
-    }
-
+    Ship::update();
     // update camera
     tank::Camera& cam = tank::Game::world()->camera;
     cam.setPos(getPos() - cam.getOrigin());
@@ -131,49 +55,23 @@ void PlayerSpaceship::update()
 
     if(pos.x < -size.x) {
         pos = tank::Vectorf(-size.x, pos.y);
-        cam.setPos(pos);
+    }
+    else if (pos.x > Universe::worldWidth-size.x) {
+        pos = tank::Vectorf(Universe::worldWidth-size.x, pos.y);
     }
     if(pos.y < -size.y) {
         pos = tank::Vectorf(pos.x, -size.y);
-        cam.setPos(pos);
     }
-    if(pos.x > Universe::worldWidth-size.x) {
-        pos = tank::Vectorf(Universe::worldWidth-size.x, pos.y);
-        cam.setPos(pos);
-    }
-    if(pos.y > Universe::worldHeight-size.y) {
+    else if (pos.y > Universe::worldHeight-size.y) {
         pos = tank::Vectorf(pos.x, Universe::worldHeight-size.y);
-        cam.setPos(pos);
     }
+    cam.setPos(pos);
 
-    //Player Wrapping
-    if(getPos().x < -size.x/2) {
-        setPos(tank::Vectorf(Universe::worldWidth+size.x/2, getPos().y));
-    }
-    if(getPos().y < -size.y/2) {
-        setPos(tank::Vectorf(getPos().x, Universe::worldWidth+size.y/2));
-    }
-    if(getPos().x > Universe::worldWidth + size.x/2) {
-        setPos(tank::Vectorf(-size.x/2, getPos().y));
-    }
-    if(getPos().y > Universe::worldHeight + size.y/2) {
-        setPos(tank::Vectorf(getPos().x, -size.y/2));
-    }
-
-    //Add bullet
-    if(tank::Keyboard::isKeyPressed(tank::Key::Space)) {
-        tank::Vectorf p = getPos() + direction * 3 + direction.rotate(-90)*4;
-        getWorld()->makeEntity<Bullet>(p,velocity, direction, "PlayerBullet");
-        p += direction.rotate(90) * 8;
-        getWorld()->makeEntity<Bullet>(p,velocity, direction, "PlayerBullet");
-    }
-    
     auto redPlanets = collide("RedPlanet");
-    using namespace std::literals;
-    if (redPlanets.size() > 0 && timer.getTime() > 1s) {
-        timer.start();
-        heal(-1);
+    if (not redPlanets.empty() > 0) {
+        hit();
     }
+    listener.setPosition({getPos().x,getPos().y,0});
 
     //Check for using on planets
     if(tank::Keyboard::isKeyPressed(tank::Key::E)) {
@@ -188,74 +86,7 @@ void PlayerSpaceship::update()
         auto greenPlanets = collide("GreenPlanet");
         if(greenPlanets.size()>0) {
             //Green stuff
-            heal(1);
+            heal();
         }
-        /*
-        auto wormholes = collide("Wormhole");
-        if(wormholes.size() < 0) {
-            //Wormhole stuff
-        }
-        */
     }
-
-}
-
-void PlayerSpaceship::setRotation(float angle)
-{
-    auto rot = getRotation();
-    Transformable::setRotation(angle);
-    direction = direction.rotate(angle - rot);
-}
-
-void PlayerSpaceship::startEngine()
-{
-    sprite->select("engine_start", false,
-                   std::bind(&PlayerSpaceship::sustainEngine, this));
-    sprite->start();
-    engineOn = true;
-    thruster.play();
-}
-
-void PlayerSpaceship::stopEngine()
-{
-    sprite->select("engine_stop", false,
-                   std::bind(&PlayerSpaceship::idleEngine, this));
-    sprite->start();
-    engineOn = false;
-    thruster.stop();
-}
-
-void PlayerSpaceship::sustainEngine()
-{
-    sprite->select("engine_run");
-    sprite->start();
-}
-
-void PlayerSpaceship::idleEngine()
-{
-    const auto graphicRotation = sprite->getRotation();
-    const auto rotation = getRotation();
-
-    this->setRotation(graphicRotation + rotation);
-    sprite->setRotation(0);
-    sprite->select("idle", false);
-    sprite->start();
-}
-
-void PlayerSpaceship::rotateEngine()
-{
-    /* not quite working
-    if (not sprite->playing()) {
-        sprite->select("engine_rotate", false);
-        sprite->start();
-    }
-    */
-}
-
-void PlayerSpaceship::shake()
-{
-    auto rotation = sprite->getRotation();
-    const auto d0 = std::uniform_real_distribution<float>{-0.5,0.5}(randomGenerator);
-
-    sprite->setRotation(rotation + d0);
 }

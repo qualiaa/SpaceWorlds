@@ -1,5 +1,5 @@
 #include <Tank/System/Game.hpp>
-#include "Space/MainMenuWorld.hpp"
+#include "MainMenuWorld.hpp"
 
 int main()
 {
