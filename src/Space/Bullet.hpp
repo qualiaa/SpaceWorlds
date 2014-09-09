@@ -14,7 +14,6 @@ public:
     Bullet(tank::Vectorf pos, tank::Vectorf vel, tank::Vectorf direction);
 
     void update() override;
-    void setRotation(float angle) override;
 
     static const float speed;
 };
