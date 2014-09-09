@@ -20,26 +20,7 @@ Ship::Ship(tank::Vectorf pos, int health)
     : Hittable(pos, health)
 {
     using res = tank::Resources;
-    auto& image = res::get<tank::Image>("assets/graphics/beetle.png");
-    sprite = makeGraphic<tank::FrameList>(image,
-                                          tank::Vectoru{16, 20},
-                                          tank::Vectoru{1, 1});
-
-    sprite->add("idle", {0}, std::chrono::milliseconds(0));
-    sprite->add("engine_start", {4,5,6,7}, std::chrono::milliseconds(250));
-    sprite->add("engine_stop", {7,6,5,4,4}, std::chrono::milliseconds(125));
-    sprite->add("engine_run", {6,7}, std::chrono::milliseconds(250));
-    sprite->add("engine_rotate", {4}, std::chrono::milliseconds(0));
-    //sprite->select("idle", false);
-    sprite->start();
-
-    setOrigin(sprite->getSize() / 2);
-    sprite->centreOrigin();
-    setLayer(100);
-
-    // centre hitbox
-    const auto oldHitbox = getHitbox();
-    setHitbox({-oldHitbox.w / 2, -oldHitbox.h / 2, oldHitbox.w, oldHitbox.h});
+    sprite = makeGraphic<tank::FrameList>();
 
     // load sfx
     thruster = res::get<tank::SoundEffect>("assets/sounds/thruster2.ogg");
@@ -47,9 +28,32 @@ Ship::Ship(tank::Vectorf pos, int health)
     thruster.setLoop(true);
 }
 
+void Ship::initAnimations(std::string const& filename)
+{
+    using res = tank::Resources;
+    auto& image = res::get<tank::Image>(filename);
+    sprite->setImage(image, tank::Vectoru{16,20}, tank::Vectoru{1,1});
+
+    sprite->add("idle", {0}, std::chrono::milliseconds(0));
+    sprite->add("engine_start", {4,5,6,7}, std::chrono::milliseconds(250));
+    sprite->add("engine_stop", {7,6,5,4,4}, std::chrono::milliseconds(125));
+    sprite->add("engine_run", {6,7}, std::chrono::milliseconds(250));
+    sprite->add("engine_rotate", {4}, std::chrono::milliseconds(0));
+    sprite->select("idle", false);
+    sprite->start();
+
+    auto size = sprite->getSize();
+    setOrigin(size / 2);
+    sprite->centreOrigin();
+
+    // create hitbox
+    setHitbox({-size.x / 2, -size.y / 2, size.x, size.y});
+}
+
 void Ship::update()
 {
     Hittable::update();
+
     // Update position
     const float speedSqr = velocity.magnitudeSquared();
     if(speedSqr > maxSpeedSquared) {
@@ -70,7 +74,7 @@ void Ship::update()
 
     // Update angle
     const auto angularSpeedCap = maxAngularSpeed * (engineOn ? 1.0 : 5.0);
-    if(angularVelocity > angularSpeedCap) {
+    if (angularVelocity > angularSpeedCap) {
         angularVelocity = angularSpeedCap;
     } else if (angularVelocity < -angularSpeedCap) {
         angularVelocity = -angularSpeedCap;
@@ -80,11 +84,10 @@ void Ship::update()
         angularVelocity /= angularDrag;
     }
 
-    // update camera
-    tank::Camera& cam = tank::Game::world()->camera;
-    tank::Vectorf size = cam.getOrigin();
+    // get camera info
+    tank::Vectorf size = tank::Game::window()->getSize() / 2;
 
-    //Player Wrapping
+    // Wrap to universe
     if(getPos().x < -size.x/2) {
         setPos(tank::Vectorf(Universe::worldWidth+size.x/2, getPos().y));
     }

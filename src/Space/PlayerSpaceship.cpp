@@ -10,6 +10,8 @@ PlayerSpaceship::PlayerSpaceship()
 {
     setLayer(100);
     setType("player");
+    initAnimations("assets/graphics/beetle.png");
+    tank::Game::world()->camera.setOrigin({0,0});
 }
 
 void PlayerSpaceship::onAdded()
@@ -45,6 +47,7 @@ void PlayerSpaceship::onRemoved()
 void PlayerSpaceship::update()
 {
     Ship::update();
+
     // update camera
     tank::Camera& cam = tank::Game::world()->camera;
     cam.setPos(getPos() - cam.getOrigin());

@@ -2,29 +2,17 @@
 #include <random>
 #include <Tank/Graphics/FrameList.hpp>
 #include <Tank/Utility/Timer.hpp>
-#include "Hittable.hpp"
+#include "Ship.hpp"
 #include "Universe.hpp"
+
 class PlayerSpaceship;
 
-class Enemy : public Hittable
+class Enemy : public Ship
 {
-    tank::observing_ptr<tank::FrameList> sprite_;
-
-    tank::Vectorf velocity {0,0};
-    tank::Vectorf direction {0,-1};
-    tank::Timer timer;
-    tank::Timer bulletTimer;
-
-    std::uniform_real_distribution<float> angles {0, 360};
+    tank::Timer timer_;
+    tank::Timer bulletTimer_;
 
     tank::observing_ptr<PlayerSpaceship> player_;
-
-    void setRotation(float angle);
-
-    void onRemoved() override {
-        Universe::score++;
-        getWorld()->makeEntity<Enemy>();
-    }
 
 public:
     Enemy();
@@ -32,6 +20,10 @@ public:
     static const float speed;
 
     void onAdded() override;
+    void onRemoved() override {
+        Universe::score++;
+        getWorld()->makeEntity<Enemy>();
+    }
 
     void update() override;
 };

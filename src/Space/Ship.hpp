@@ -8,7 +8,6 @@
 
 class Ship : public Hittable
 {
-    tank::observing_ptr<tank::FrameList> sprite;
     std::mt19937_64 randomGenerator;
     tank::SoundEffect thruster;
 protected:
@@ -16,6 +15,10 @@ protected:
     tank::Vectorf direction {0,-1};
     float angularVelocity{0};
     bool engineOn {false}, moving {false}, rotating {false};
+
+    tank::observing_ptr<tank::FrameList> sprite;
+
+    void initAnimations(std::string const& filename);
 
 public:
     static const float acceleration;
@@ -27,7 +30,7 @@ public:
     static const float breakDrag;
     static const float drag;
 
-    Ship(tank::Vectorf pos, int health = 1);
+    Ship(tank::Vectorf pos = {}, int health = 1);
 
     virtual void update() override;
     virtual void setRotation(float angle) override;
