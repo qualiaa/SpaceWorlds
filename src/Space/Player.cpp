@@ -1,4 +1,4 @@
-#include "PlayerSpaceship.hpp"
+#include "Player.hpp"
 
 #include <functional>
 #include <Tank/System/Game.hpp>

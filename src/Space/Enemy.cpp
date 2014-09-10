@@ -4,7 +4,7 @@
 #include <Tank/System/Game.hpp>
 #include <Tank/Utility/Resources.hpp>
 #include "Universe.hpp"
-#include "PlayerSpaceship.hpp"
+#include "Player.hpp"
 #include "Bullet.hpp"
 
 const float Enemy::speed = 1;

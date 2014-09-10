@@ -7,7 +7,7 @@
 #include "../Dialog.hpp"
 #include "../HudDialog.hpp"
 #include "Planet.hpp"
-#include "PlayerSpaceship.hpp"
+#include "Player.hpp"
 #include "Enemy.hpp"
 #include "Minimap.hpp"
 
