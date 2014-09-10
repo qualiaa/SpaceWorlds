@@ -16,13 +16,13 @@ Enemy::Enemy() : Ship()
 
     initAnimations("assets/graphics/beetle2.png");
     setType("enemy");
+    setLayer(99);
 
     setPos({rand(Universe::randEng), rand(Universe::randEng)});
 }
 
 void Enemy::onAdded()
 {
-    timer_.start();
     bulletTimer_.start();
     auto angle = angles(Universe::randEng);
     setRotation(angle);
@@ -33,15 +33,29 @@ void Enemy::update()
 {
     using namespace std::literals;
 
-    thrust();
-    Ship::update();
+    //thrust();
 
-    if (timer_.getTime() > 5s) {
-        setRotation(angles(Universe::randEng));
-        timer_.start();
+    auto playerDisplacement = player_->getPos() - getPos();
+    auto playerDistance = playerDisplacement.magnitude();
+    auto playerAngle = direction.getAngle(playerDisplacement);
+
+    if (playerDistance < 50) {
+        rotate((playerAngle > 0) - (playerAngle < 0));
+    } else {
+        if (velocity.magnitude() > 2) {
+            thrustTimer_.start();
+        } else if (not thrustTimer_.isStarted()
+                || thrustTimer_.getTime() > 500ms) {
+            thrust();
+            thrustTimer_.stop();
+        }
     }
-    if (bulletTimer_.getTime() > 500ms && (getPos() - player_->getPos()).magnitude() < 200) {
+
+    if (bulletTimer_.getTime() > 500ms
+            && playerDistance < 200) {
         shoot();
         bulletTimer_.start();
     }
+
+    Ship::update();
 }

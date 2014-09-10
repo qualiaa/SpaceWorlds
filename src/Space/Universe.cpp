@@ -26,7 +26,7 @@ Universe::Universe()
         }
     };
     makeEntity<bg>();
-    player_ = makeEntity<PlayerSpaceship>();
+    player_ = makeEntity<Player>();
     for (int i = 0; i < 10; ++i) {
         makeEntity<Enemy>();
     }

@@ -23,9 +23,11 @@ Ship::Ship(tank::Vectorf pos, int health)
     sprite = makeGraphic<tank::FrameList>();
 
     // load sfx
-    thruster = res::get<tank::SoundEffect>("assets/sounds/thruster2.ogg");
+    thruster = res::get<tank::SoundEffect>("assets/sounds/thruster2_mono.ogg");
     thruster.setVolume(10);
     thruster.setLoop(true);
+    thruster.setAttenuation(5);
+    thruster.setMinDistance(1);
 }
 
 void Ship::initAnimations(std::string const& filename)
@@ -101,7 +103,13 @@ void Ship::update()
         setPos(tank::Vectorf(getPos().x, -size.y/2));
     }
 
+    // position calculations complete
+    if (not moving and engineOn) {
+        engineStop();
+    }
     rotating = moving = false;
+
+    thruster.setPosition(getPos());
 }
 
 void Ship::rotate(double factor)
@@ -122,6 +130,7 @@ void Ship::thrust()
     shake();
 
     if (not engineOn) {
+        engineOn = true;
         engineStart();
     }
 }
@@ -139,7 +148,6 @@ void Ship::engineStart()
     sprite->select("engine_start", false,
                    std::bind(&Ship::engineSustain, this));
     sprite->start();
-    engineOn = true;
     thruster.play();
 }
 

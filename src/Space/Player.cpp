@@ -1,11 +1,12 @@
 #include "Player.hpp"
 
 #include <functional>
+#include <SFML/Audio/Listener.hpp>
 #include <Tank/System/Game.hpp>
 #include <Tank/System/Keyboard.hpp>
 #include "Universe.hpp"
 
-PlayerSpaceship::PlayerSpaceship()
+Player::Player()
     : Ship({90,90}, 10)
 {
     setLayer(100);
@@ -14,7 +15,7 @@ PlayerSpaceship::PlayerSpaceship()
     tank::Game::world()->camera.setOrigin({0,0});
 }
 
-void PlayerSpaceship::onAdded()
+void Player::onAdded()
 {
     using kbd = tank::Keyboard;
     using Key = tank::Key;
@@ -38,13 +39,13 @@ void PlayerSpaceship::onAdded()
     connect(engineStop, std::bind(&Ship::engineStop, this));
 }
 
-void PlayerSpaceship::onRemoved()
+void Player::onRemoved()
 {
     tank::Game::popWorld();
     tank::Game::makeWorld<Universe>();
 }
 
-void PlayerSpaceship::update()
+void Player::update()
 {
     Ship::update();
 
@@ -74,7 +75,9 @@ void PlayerSpaceship::update()
     if (not redPlanets.empty() > 0) {
         hit();
     }
-    listener.setPosition({getPos().x,getPos().y,0});
+
+    // update listener
+    sf::Listener::setPosition({getPos().x,getPos().y,0});
 
     //Check for using on planets
     if(tank::Keyboard::isKeyPressed(tank::Key::E)) {

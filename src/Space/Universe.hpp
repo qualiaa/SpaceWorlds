@@ -4,12 +4,12 @@
 #include <Tank/Audio/Music.hpp>
 #include "../HudDialog.hpp"
 
-class PlayerSpaceship;
+class Player;
 
 class Universe : public tank::World
 {
     tank::Music fightMusic_;
-    tank::observing_ptr<PlayerSpaceship> player_;
+    tank::observing_ptr<Player> player_;
 	tank::observing_ptr<HudDialog> hud;
 
 public:

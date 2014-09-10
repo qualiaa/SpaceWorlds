@@ -20,7 +20,7 @@ Bullet::Bullet(tank::Vectorf pos, tank::Vectorf vel, tank::Vectorf direction)
     
     blast = res::get<tank::SoundEffect>("assets/sounds/shoot_sound.wav");
     blast.setVolume(100);
-    blast.setRelativeToListener(true);
+    blast.setPosition(getPos());
     blast.play();
 }
 
@@ -32,5 +32,4 @@ void Bullet::update()
         remove();
     }
     moveBy(velocity);
-
 }

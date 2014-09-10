@@ -5,14 +5,14 @@
 #include "Ship.hpp"
 #include "Universe.hpp"
 
-class PlayerSpaceship;
+class Player;
 
 class Enemy : public Ship
 {
-    tank::Timer timer_;
+    tank::Timer thrustTimer_;
     tank::Timer bulletTimer_;
 
-    tank::observing_ptr<PlayerSpaceship> player_;
+    tank::observing_ptr<Player> player_;
 
 public:
     Enemy();

@@ -1,13 +1,10 @@
 #pragma once
-#include <SFML/Audio/Listener.hpp>
 #include "Ship.hpp"
 
-class PlayerSpaceship : public Ship
+class Player : public Ship
 {
-    sf::Listener listener;
-
 public:
-    PlayerSpaceship();
+    Player();
 
     void onAdded() override;
     void onRemoved() override;
