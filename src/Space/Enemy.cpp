@@ -39,8 +39,16 @@ void Enemy::update()
     auto playerDistance = playerDisplacement.magnitude();
     auto playerAngle = direction.getAngle(playerDisplacement);
 
-    if (playerDistance < 50) {
-        rotate((playerAngle > 0) - (playerAngle < 0));
+    if (playerDistance < 200) {
+        if (playerAngle*playerAngle > 25) {
+            rotate((playerAngle > 0) - (playerAngle < 0));
+        } else {
+            thrust();
+            if (bulletTimer_.getTime() > 500ms) {
+                shoot();
+                bulletTimer_.start();
+            }
+        }
     } else {
         if (velocity.magnitude() > 2) {
             thrustTimer_.start();
@@ -51,11 +59,6 @@ void Enemy::update()
         }
     }
 
-    if (bulletTimer_.getTime() > 500ms
-            && playerDistance < 200) {
-        shoot();
-        bulletTimer_.start();
-    }
 
     Ship::update();
 }
