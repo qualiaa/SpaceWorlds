@@ -56,9 +56,8 @@ void Planet::update()
 
     if (!players.empty()) {
         setNameVisible(true);
-        if (tank::Keyboard::isKeyPressed(tank::Key::E)) {
-            --uses_;
-            overlay_->
+        if (uses_ and tank::Keyboard::isKeyPressed(tank::Key::E)) {
+            overlay_->setOpacity(overlay_->getFillOpacity() + 120 / uses_--);
         }
     } else {
         setNameVisible(false);
