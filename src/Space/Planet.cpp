@@ -32,6 +32,9 @@ Planet::Planet(tank::Vectorf pos, const std::string& name)
         addType("GreenPlanet");
         break;
     }
+
+    overlay_ = makeGraphic<tank::CircleShape>(getGraphic(0)->getSize().x / 2);
+    overlay_->setFillColor({0,0,0,0});
 }
 
 void Planet::onAdded()
@@ -43,10 +46,20 @@ void Planet::onAdded()
 
 void Planet::update()
 {
-    auto players = collide("PlayerSpaceship");
+    if (uses_ < 1) {
+       if (type_ == Green) {
+           removeType("GreenPlanet");
+           addType("GreenPlanetDepleted");
+       }
+    }
+    auto players = collide("player");
 
     if (!players.empty()) {
         setNameVisible(true);
+        if (tank::Keyboard::isKeyPressed(tank::Key::E)) {
+            --uses_;
+            overlay_->
+        }
     } else {
         setNameVisible(false);
     }
