@@ -71,28 +71,28 @@ void Player::update()
     }
     cam.setPos(pos);
 
-    auto redPlanets = collide("RedPlanet");
-    if (not redPlanets.empty() > 0) {
-        die();
+    auto planets = collide("Planet");
+    if (not planets.empty() > 0) {
+        auto planet = planets.back();
+        if (planet->isType("RedPlanet")) {
+            die();
+        }
+        if (tank::Keyboard::isKeyPressed(tank::Key::E)) {
+            if(planet->isType("BluePlanet") > 0) {
+                //Blue stuff
+            }
+            if(planet->isType("RedPlanet") > 0) {
+                //Red stuff
+            }
+            if(planet->isType("GreenPlanet") > 0) {
+                //Green stuff
+                heal();
+            }
+        }
     }
 
     // update listener
     sf::Listener::setPosition({getPos().x,getPos().y,0});
 
-    //Check for using on planets
-    if(tank::Keyboard::isKeyPressed(tank::Key::E)) {
-        auto bluePlanets = collide("BluePlanet");
-        if(bluePlanets.size()>0) {
-            //Blue stuff
-        }
-        auto redPlanets = collide("RedPlanet");
-        if(redPlanets.size()>0) {
-            //Red stuff
-        }
-        auto greenPlanets = collide("GreenPlanet");
-        if(greenPlanets.size()>0) {
-            //Green stuff
-            heal();
-        }
-    }
+    //Check for using planets
 }
