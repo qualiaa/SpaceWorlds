@@ -73,7 +73,7 @@ void Player::update()
 
     auto redPlanets = collide("RedPlanet");
     if (not redPlanets.empty() > 0) {
-        hit();
+        die();
     }
 
     // update listener
