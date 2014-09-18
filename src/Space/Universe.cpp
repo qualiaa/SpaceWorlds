@@ -7,6 +7,7 @@
 #include "../Dialog.hpp"
 #include "../HudDialog.hpp"
 #include "Planet.hpp"
+#include "StarMap.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "Minimap.hpp"
@@ -19,13 +20,19 @@ std::mt19937 Universe::randEng {static_cast<unsigned>(std::time(nullptr))};
 Universe::Universe()
 {
     using res = tank::Resources;
+    using Vecf = tank::Vectorf;
+
+    /*
     struct bg : public tank::Entity {
         bg() : tank::Entity({-250,-250}) {
             makeGraphic(res::get<tank::Image>("assets/graphics/starmap.png"));
             setLayer(std::numeric_limits<int>::min());
         }
     };
+
     makeEntity<bg>();
+    */
+    makeEntity<StarMap>(Vecf{}, Vecf{worldWidth,worldHeight});
     player_ = makeEntity<Player>();
     for (int i = 0; i < 10; ++i) {
         makeEntity<Enemy>();
@@ -34,7 +41,7 @@ Universe::Universe()
     camera.setScale(2);
     tank::Game::window()->setBackgroundColor({9,21,31});
 
-    hud = makeEntity<HudDialog>(tank::Vectorf{0,0}, "HELLO THERE");
+    hud_ = makeEntity<HudDialog>(tank::Vectorf{0,0}, "HELLO THERE");
 
     genWorld();
 
@@ -118,6 +125,6 @@ void Universe::update()
     using namespace std::literals;
     tank::World::update();
 
-    hud->setText("SHIELDS: "s + std::to_string(player_->getHealth()) + "0%\n"
+    hud_->setText("SHIELDS: "s + std::to_string(player_->getHealth()) + "0%\n"
         + "SCORE: " + std::to_string(score));
 }
