@@ -54,22 +54,24 @@ void Player::update()
     cam.setPos(getPos() - cam.getOrigin());
 
     //Camera bounding
-    tank::Vectorf pos = cam.getPos();
-    tank::Vectorf size = cam.getOrigin();
+    auto camPos = cam.getPos();
+    //cam.setOrigin({200.0,200.0});
+    auto camOri = cam.getOrigin();
+    auto windowSize = tank::Game::window()->getSize();
 
-    if(pos.x < -size.x) {
-        pos = tank::Vectorf(-size.x, pos.y);
+    if(camPos.x + camOri.x/2 < 0) {
+        camPos.x = -camOri.x/2;
     }
-    else if (pos.x > Universe::worldWidth-size.x) {
-        pos = tank::Vectorf(Universe::worldWidth-size.x, pos.y);
+    else if (camPos.x + windowSize.x - camOri.x/2 > Universe::worldWidth) {
+        camPos.x = Universe::worldWidth - windowSize.x + camOri.x/2;
     }
-    if(pos.y < -size.y) {
-        pos = tank::Vectorf(pos.x, -size.y);
+    if(camPos.y + camOri.y/2 < 0) {
+        camPos.y = -camOri.y/2;
     }
-    else if (pos.y > Universe::worldHeight-size.y) {
-        pos = tank::Vectorf(pos.x, Universe::worldHeight-size.y);
+    else if (camPos.y + windowSize.y - camOri.y/2 > Universe::worldHeight) {
+        camPos.y = Universe::worldHeight - windowSize.y + camOri.y/2;
     }
-    cam.setPos(pos);
+    cam.setPos(camPos);
 
     auto planets = collide("Planet");
     if (not planets.empty() > 0) {
