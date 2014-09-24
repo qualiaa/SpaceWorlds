@@ -2,7 +2,6 @@
 
 #include <Tank/Utility/Resources.hpp>
 #include <Tank/System/World.hpp>
-#include <Tank/System/Game.hpp>
 #include "Universe.hpp"
 #include "Bullet.hpp"
 
@@ -86,21 +85,18 @@ void Ship::update()
         angularVelocity /= angularDrag;
     }
 
-    // get camera info
-    tank::Vectorf size = tank::Game::window()->getSize() / 2;
-
     // Wrap to universe
-    if(getPos().x < -size.x/2) {
-        setPos(tank::Vectorf(Universe::worldWidth+size.x/2, getPos().y));
+    if(getPos().x < 0) {
+        setPos(tank::Vectorf(Universe::worldWidth, getPos().y));
     }
-    else if(getPos().x > Universe::worldWidth + size.x/2) {
-        setPos(tank::Vectorf(-size.x/2, getPos().y));
+    else if(getPos().x > Universe::worldWidth) {
+        setPos(tank::Vectorf(0, getPos().y));
     }
-    if(getPos().y < -size.y/2) {
-        setPos(tank::Vectorf(getPos().x, Universe::worldWidth+size.y/2));
+    if(getPos().y < 0) {
+        setPos(tank::Vectorf(getPos().x, Universe::worldHeight));
     }
-    else if(getPos().y > Universe::worldHeight + size.y/2) {
-        setPos(tank::Vectorf(getPos().x, -size.y/2));
+    else if(getPos().y > Universe::worldHeight) {
+        setPos(tank::Vectorf(getPos().x, 0));
     }
 
     // position calculations complete
