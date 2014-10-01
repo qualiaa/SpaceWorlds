@@ -23,7 +23,6 @@ Universe::Universe()
 {
     camera.setScale(2);
     using res = tank::Resources;
-    using Vecf = tank::Vectorf;
 
     struct bg : public tank::Entity {
         bg() : tank::Entity({-250,-250}) {

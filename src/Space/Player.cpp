@@ -27,9 +27,7 @@ void Player::onAdded()
 {
     using kbd = tank::Keyboard;
     using Key = tank::Key;
-    using C = tank::Controller;
     using Btn = tank::Controller::Button;
-    using Axis = tank::Controller::Axis;
 
     // set up controls
     if (not controller_) {
