@@ -17,7 +17,7 @@ Bullet::Bullet(tank::Vectorf pos, tank::Vectorf vel, tank::Vectorf direction)
     setRotation(tank::Vectorf{0,-1}.getAngle(direction));
 
     lifeTimer.start();
-    
+
     blast = res::get<tank::SoundEffect>("assets/sounds/shoot_sound.wav");
     blast.setVolume(100);
     blast.setPosition(getPos());
@@ -27,7 +27,7 @@ Bullet::Bullet(tank::Vectorf pos, tank::Vectorf vel, tank::Vectorf direction)
 void Bullet::update()
 {
     using namespace std::literals;
-    if (lifeTimer.getTime() > 10s)
+    if (lifeTimer.getTime() > 3s)
     {
         remove();
     }

@@ -17,6 +17,7 @@ public:
     virtual ~Universe();
 
     void update() override;
+    void draw() override;
     virtual void onAdded() override;
 
     static int score;
@@ -30,5 +31,4 @@ public:
 
 private:
     void genWorld();
-
 };

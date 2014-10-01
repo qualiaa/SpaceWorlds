@@ -1,7 +1,9 @@
 #include "Universe.hpp"
 
 #include <ctime>
+#include <algorithm>
 #include <Tank/System/Game.hpp>
+#include <Tank/System/Controller.hpp>
 #include <Tank/Graphics/Text.hpp>
 #include <Tank/Utility/Resources.hpp>
 #include "../Dialog.hpp"
@@ -22,7 +24,6 @@ Universe::Universe()
     using res = tank::Resources;
     using Vecf = tank::Vectorf;
 
-    /*
     struct bg : public tank::Entity {
         bg() : tank::Entity({-250,-250}) {
             makeGraphic(res::get<tank::Image>("assets/graphics/starmap.png"));
@@ -31,9 +32,14 @@ Universe::Universe()
     };
 
     makeEntity<bg>();
-    */
-    makeEntity<StarMap>(Vecf{}, Vecf{worldWidth,worldHeight});
-    player_ = makeEntity<Player>();
+    //makeEntity<StarMap>(Vecf{}, Vecf{worldWidth,worldHeight});
+
+    auto controllers = tank::Controllers::getConnectedControllers();
+    tank::observing_ptr<tank::Controller> controller = nullptr;
+    if (not controllers.empty()) {
+        controller = controllers.front();
+    }
+    player_ = makeEntity<Player>(controller);
     for (int i = 0; i < 10; ++i) {
         makeEntity<Enemy>();
     }
@@ -118,6 +124,27 @@ void Universe::genWorld()
         planets.emplace_back(
              makeEntity<Planet>(tank::Vectorf{genx, geny}, name.str()));
     }
+}
+
+void Universe::draw()
+{
+    auto halfWindow = tank::Game::window()->SFMLWindow().getSize() / 2u;
+    auto def = tank::Game::window()->SFMLWindow().getDefaultView();
+    sf::View d,c,b,a = def;
+    a.setSize(halfWindow.x, halfWindow.y);
+    //a.zoom(0.5);
+    d = c = b = a;
+    a.setViewport({0.0,0.0,0.5,0.5});
+    b.setViewport({0.5,0.0,0.5,0.5});
+    c.setViewport({0.0,0.5,0.5,0.5});
+    d.setViewport({0.5,0.5,0.5,0.5});
+    std::vector<sf::View> views_ {a, b, c, d};
+
+    for (auto& view : views_) {
+        tank::Game::window()->SFMLWindow().setView(view);
+        tank::World::draw();
+    }
+    tank::Game::window()->SFMLWindow().setView(def);
 }
 
 void Universe::update()

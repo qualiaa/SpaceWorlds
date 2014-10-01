@@ -3,7 +3,6 @@
 
 class HudDialog : public Dialog
 {
-
     tank::Camera c;
 
 public:

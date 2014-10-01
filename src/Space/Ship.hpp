@@ -35,6 +35,11 @@ public:
     virtual void update() override;
     virtual void setRotation(float angle) override;
 
+    tank::Vectorf getDirection() const { return direction; }
+    void setDirection(tank::Vectorf d) { direction = d; }
+    tank::Vectorf getVelocity() const { return velocity; }
+    void setVelocity(tank::Vectorf v) { velocity = v; }
+
     void rotate(double factor);
     void rotateCW() {rotate(1);};
     void rotateCCW() {rotate(-1);};
@@ -42,8 +47,9 @@ public:
     void thrust();
     void shoot();
 
-    void engineStart();
     void engineStop();
+private:
+    void engineStart();
     void engineSustain();
     void engineIdle();
     void engineRotate();
