@@ -15,9 +15,9 @@ Player::Player(tank::observing_ptr<tank::Controller> c)
 {
     using namespace std::literals;
     setLayer(100);
-    setType("player"s + std::to_string(id_));
+    setType("player");
+    addType("player"s + std::to_string(id_));
     initAnimations("assets/graphics/beetle.png");
-    tank::Game::world()->camera.setOrigin({0,0});
 }
 
 void Player::onAdded()
@@ -105,7 +105,7 @@ void Player::update()
     }
 
     // update camera
-    tank::Camera& cam = tank::Game::world()->camera;
+    tank::Camera& cam = camera_;//tank::Game::world()->camera;
     cam.setPos(getPos() - cam.getOrigin());
 
     /*

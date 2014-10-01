@@ -21,6 +21,7 @@ std::mt19937 Universe::randEng {static_cast<unsigned>(std::time(nullptr))};
 
 Universe::Universe()
 {
+    camera.setScale(2);
     using res = tank::Resources;
     using Vecf = tank::Vectorf;
 
@@ -34,20 +35,8 @@ Universe::Universe()
     makeEntity<bg>();
     //makeEntity<StarMap>(Vecf{}, Vecf{worldWidth,worldHeight});
 
-    auto controllers = tank::Controllers::getConnectedControllers();
-    tank::observing_ptr<tank::Controller> controller = nullptr;
-    if (not controllers.empty()) {
-        controller = controllers.front();
-    }
-    player_ = makeEntity<Player>(controller);
-    for (int i = 0; i < 10; ++i) {
-        makeEntity<Enemy>();
-    }
-    makeEntity<Minimap>();
-    camera.setScale(2);
+    createPlayers();
     tank::Game::window()->setBackgroundColor({9,21,31});
-
-    hud_ = makeEntity<HudDialog>(tank::Vectorf{0,0}, "HELLO THERE");
 
     genWorld();
 
@@ -126,32 +115,62 @@ void Universe::genWorld()
     }
 }
 
-void Universe::draw()
+void Universe::createPlayers()
 {
-    auto halfWindow = tank::Game::window()->SFMLWindow().getSize() / 2u;
-    auto def = tank::Game::window()->SFMLWindow().getDefaultView();
+    const auto controllers = tank::Controllers::getConnectedControllers();
+    const auto windowSize = tank::Game::window()->SFMLWindow().getSize();
+    const auto def = tank::Game::window()->SFMLWindow().getDefaultView();
     sf::View d,c,b,a = def;
-    a.setSize(halfWindow.x, halfWindow.y);
-    //a.zoom(0.5);
-    d = c = b = a;
-    a.setViewport({0.0,0.0,0.5,0.5});
-    b.setViewport({0.5,0.0,0.5,0.5});
-    c.setViewport({0.0,0.5,0.5,0.5});
-    d.setViewport({0.5,0.5,0.5,0.5});
-    std::vector<sf::View> views_ {a, b, c, d};
-
-    for (auto& view : views_) {
-        tank::Game::window()->SFMLWindow().setView(view);
-        tank::World::draw();
+    tank::observing_ptr<tank::Controller> controller = nullptr;
+    if (not controllers.empty()) {
+        controller = controllers.front();
     }
-    tank::Game::window()->SFMLWindow().setView(def);
+
+    switch(controllers.size()) {
+        case 0:
+        case 1:
+            players_.emplace_back(makeEntity<Player>(controller), def);
+            for (int i = 0; i < 10; ++i) {
+                makeEntity<Enemy>();
+            }
+            break;
+        case 2:
+            a.setSize(windowSize.x / 2, windowSize.y);
+            b = a;
+            a.setViewport({0.0,0.0,0.5,1});
+            b.setViewport({0.5,0.0,0.5,1});
+            players_.emplace_back(makeEntity<Player>(controllers.front()), a);
+            players_.emplace_back(makeEntity<Player>(controllers.back()), b);
+            break;
+        default:
+        case 4:
+            a.setSize(windowSize.x / 2, windowSize.y / 2);
+            d = c = b = a;
+            a.setViewport({0.0,0.0,0.5,0.5});
+            b.setViewport({0.5,0.0,0.5,0.5});
+            c.setViewport({0.0,0.5,0.5,0.5});
+            d.setViewport({0.5,0.5,0.5,0.5});
+            players_.emplace_back(makeEntity<Player>(controllers[3]), d);
+        case 3:
+            players_.emplace_back(makeEntity<Player>(controllers[0]), a);
+            players_.emplace_back(makeEntity<Player>(controllers[1]), b);
+            players_.emplace_back(makeEntity<Player>(controllers[2]), c);
+            break;
+    }
+    player_ = players_.back().first;
 }
 
-void Universe::update()
+void Universe::draw()
 {
-    using namespace std::literals;
-    tank::World::update();
+    auto oldCam = camera;
 
-    hud_->setText("SHIELDS: "s + std::to_string(player_->getHealth()) + "0%\n"
-        + "SCORE: " + std::to_string(score));
+    for (auto& playerView : players_) {
+        camera = playerView.first->getCamera();
+        tank::Game::window()->SFMLWindow().setView(playerView.second);
+        tank::World::draw();
+    }
+    const auto def = tank::Game::window()->SFMLWindow().getDefaultView();
+    tank::Game::window()->SFMLWindow().setView(def);
+
+    camera = oldCam;
 }
