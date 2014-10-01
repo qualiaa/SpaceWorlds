@@ -14,9 +14,12 @@ Player::Player(tank::observing_ptr<tank::Controller> c)
     , id_(numPlayers++)
 {
     using namespace std::literals;
+    std::uniform_int_distribution<int> pos {0, Universe::worldWidth};
+    std::uniform_int_distribution<int> rot {0, 360};
+    setPos({pos(Universe::randEng), pos(Universe::randEng)});
+    setRotation(rot(Universe::randEng));
     setLayer(100);
-    setType("player");
-    addType("player"s + std::to_string(id_));
+    setType(std::to_string(id_));
     initAnimations("assets/graphics/beetle.png");
 }
 
@@ -77,6 +80,7 @@ void Player::onAdded()
     // set up camera
     camera_ = getWorld()->camera;
 }
+
 
 void Player::onRemoved()
 {

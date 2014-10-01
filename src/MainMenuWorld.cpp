@@ -8,9 +8,9 @@
 MainMenuWorld::MainMenuWorld()
 {
     using res = tank::Resources;
-    auto backgroundImage = 
-        res::get<tank::Image>("assets/graphics/mainmenu_background.png");
-    makeEntity<tank::Entity>()->makeGraphic(backgroundImage);
+    //auto backgroundImage = 
+        //res::get<tank::Image>("assets/graphics/mainmenu_background.png");
+    //makeEntity<tank::Entity>()->makeGraphic(backgroundImage);
 
     auto button = makeEntity<MainMenuPlay>(
             tank::Vectorf{tank::Game::window()->getSize().x/2.f, 400});

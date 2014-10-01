@@ -10,7 +10,7 @@ const float Ship::angularAcceleration     {0.115};
 const float Ship::maxAngularSpeed         {1.5};
 const float Ship::maxSpeed                {3.2};
 const float Ship::maxSpeedSquared         {maxSpeed * maxSpeed};
-const float Ship::angularDrag             {1.075};
+const float Ship::angularDrag             {1.1};
 const float Ship::breakDrag               {1.05};
 const float Ship::drag                    {1.0285};
 
@@ -74,7 +74,7 @@ void Ship::update()
     }
 
     // Update angle
-    const auto angularSpeedCap = maxAngularSpeed * (engineOn ? 1.0 : 5.0);
+    const auto angularSpeedCap = maxAngularSpeed * (engineOn ? 1.0 : 3.0);
     if (angularVelocity > angularSpeedCap) {
         angularVelocity = angularSpeedCap;
     } else if (angularVelocity < -angularSpeedCap) {
@@ -175,7 +175,7 @@ void Ship::engineIdle()
 
 void Ship::engineRotate()
 {
-    /* not quite working */
+    /* FIXME: not quite working */
     if (not sprite->playing()) {
         sprite->select("engine_rotate", false);
         sprite->start();
